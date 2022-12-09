@@ -17,6 +17,13 @@ from unifair.modules.pandas.util import serialize_to_tarpacked_csv_files
 from unifair.modules.raw.tasks import modify_all_lines, modify_datafile_contents, modify_each_line
 from unifair.modules.raw.util import serialize_to_tarpacked_raw_files
 from unifair.modules.tables.models import JsonTableOfStrings
+import unifair.modules.json.util
+import unifair.modules.pandas.util
+import unifair.modules.raw.util
+unifair.modules.json.util.ROOT_DIR = './input/bif'
+unifair.modules.pandas.util.ROOT_DIR = './input/bif'
+unifair.modules.raw.util.ROOT_DIR = './input/bif'
+
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False

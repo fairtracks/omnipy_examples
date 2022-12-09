@@ -7,6 +7,13 @@ from unifair.modules.json.models import JsonDataset, JsonDict, JsonType
 from unifair.modules.json.util import serialize_to_tarpacked_json_files
 from unifair.modules.raw.tasks import modify_datafile_contents
 from unifair.modules.raw.util import serialize_to_tarpacked_raw_files
+import unifair.modules.json.util
+import unifair.modules.pandas.util
+import unifair.modules.raw.util
+unifair.modules.json.util.ROOT_DIR = './input/bif'
+unifair.modules.pandas.util.ROOT_DIR = './input/bif'
+unifair.modules.raw.util.ROOT_DIR = './input/bif'
+
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False
