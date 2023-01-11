@@ -2,25 +2,25 @@ from typing import Any
 
 import requests
 
-from unifair import runtime
-from unifair.compute.flow import FuncFlowTemplate
-from unifair.compute.task import TaskTemplate
-from unifair.data.dataset import Dataset
-from unifair.data.model import Model
-from unifair.modules.general.tasks import cast_dataset
-from unifair.modules.json.models import JsonDataset, JsonDictOfAnyModel, JsonModel
-from unifair.modules.json.util import serialize_to_tarpacked_json_files
-from unifair.modules.pandas.models import PandasDataset
-from unifair.modules.pandas.util import serialize_to_tarpacked_csv_files
-from unifair.modules.tables.models import JsonTableOfStrings
-from unifair.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
+from omnipy import runtime
+from omnipy.compute.flow import FuncFlowTemplate
+from omnipy.compute.task import TaskTemplate
+from omnipy.data.dataset import Dataset
+from omnipy.data.model import Model
+from omnipy.modules.general.tasks import cast_dataset
+from omnipy.modules.json.models import JsonDataset, JsonDictOfAnyModel, JsonModel
+from omnipy.modules.json.util import serialize_to_tarpacked_json_files
+from omnipy.modules.pandas.models import PandasDataset
+from omnipy.modules.pandas.util import serialize_to_tarpacked_csv_files
+from omnipy.modules.tables.models import JsonTableOfStrings
+from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
                                           transpose_dataset_of_dicts_to_lists)
-import unifair.modules.json.util
-import unifair.modules.pandas.util
-import unifair.modules.raw.util
-unifair.modules.json.util.ROOT_DIR = './input/bif'
-unifair.modules.pandas.util.ROOT_DIR = './input/bif'
-unifair.modules.raw.util.ROOT_DIR = './input/bif'
+import omnipy.modules.json.util
+import omnipy.modules.pandas.util
+import omnipy.modules.raw.util
+omnipy.modules.json.util.ROOT_DIR = './input/bif'
+omnipy.modules.pandas.util.ROOT_DIR = './input/bif'
+omnipy.modules.raw.util.ROOT_DIR = './input/bif'
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False
@@ -84,7 +84,7 @@ uniprot_6_ds = to_pandas.run(uniprot_5_ds)
 @TaskTemplate
 def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     df = pandas['results.genes.synonyms']
-    df['_unifair_ref'] = df['_unifair_ref'].str.strip('results.genes.')
+    df['_omnipy_ref'] = df['_omnipy_ref'].str.strip('results.genes.')
     out_dataset = PandasDataset()
     out_dataset['my_table'] = df
     return out_dataset
@@ -102,9 +102,9 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 #
 # join_a_with_b(uniprot_6_ds,
 #               'results.genes.synonyms',
-#               '_unifair_ref',
+#               '_omnipy_ref',
 #               'results.genes',
-#               '_unifair_id',
+#               '_omnipy_id',
 #               'merged_table')
 
 uniprot_7_ds = pandas_magic.run(uniprot_6_ds)

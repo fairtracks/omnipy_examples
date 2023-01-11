@@ -1,18 +1,18 @@
-from unifair import runtime
-from unifair.modules.general.tasks import cast_dataset
-from unifair.modules.json.models import JsonDictOfAnyModel
-from unifair.modules.json.tasks import import_directory
-from unifair.modules.json.util import serialize_to_tarpacked_json_files
-from unifair.modules.pandas.util import serialize_to_tarpacked_csv_files
-from unifair.modules.tables.models import JsonTableOfStrings
-from unifair.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
+from omnipy import runtime
+from omnipy.modules.general.tasks import cast_dataset
+from omnipy.modules.json.models import JsonDictOfAnyModel
+from omnipy.modules.json.tasks import import_directory
+from omnipy.modules.json.util import serialize_to_tarpacked_json_files
+from omnipy.modules.pandas.util import serialize_to_tarpacked_csv_files
+from omnipy.modules.tables.models import JsonTableOfStrings
+from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
                                           transpose_dataset_of_dicts_to_lists)
-import unifair.modules.json.util
-import unifair.modules.pandas.util
-import unifair.modules.raw.util
-unifair.modules.json.util.ROOT_DIR = './input/bif'
-unifair.modules.pandas.util.ROOT_DIR = './input/bif'
-unifair.modules.raw.util.ROOT_DIR = './input/bif'
+import omnipy.modules.json.util
+import omnipy.modules.pandas.util
+import omnipy.modules.raw.util
+omnipy.modules.json.util.ROOT_DIR = './input/bif'
+omnipy.modules.pandas.util.ROOT_DIR = './input/bif'
+omnipy.modules.raw.util.ROOT_DIR = './input/bif'
 
 
 runtime.config.engine = 'local'
