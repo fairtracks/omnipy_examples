@@ -14,9 +14,6 @@ class ListOfPositiveNumbers(Model[List[PositiveInt]]):
     ...
 
 
-my_numbers = ListOfNumbers([1243, -123, 3425])
-
-
 @TaskTemplate(iterate_over_data_files=True)
 def make_absolute(numbers: ListOfNumbers) -> ListOfPositiveNumbers:
     return [abs(num) for num in numbers]
