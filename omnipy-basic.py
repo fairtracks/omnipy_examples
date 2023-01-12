@@ -1,9 +1,13 @@
 from typing import List
 
 from omnipy.compute.task import TaskTemplate
+from omnipy.compute.flow import LinearFlowTemplate
 from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from pydantic import PositiveInt
+from omnipy import runtime
+
+runtime.config.engine = 'local'
 
 
 class ListOfNumbers(Model[List[int]]):
@@ -19,7 +23,18 @@ def make_absolute(numbers: ListOfNumbers) -> ListOfPositiveNumbers:
     return [abs(num) for num in numbers]
 
 
-dataset = Dataset[ListOfNumbers]()
-dataset['my_numbers'] = ListOfNumbers([1243, -123, 3425])
+@TaskTemplate(iterate_over_data_files=True)
+def double(numbers: ListOfPositiveNumbers) -> ListOfPositiveNumbers:
+    return [num * 2 for num in numbers]
 
-my_pos_numbers = make_absolute.run(dataset)
+
+@LinearFlowTemplate(make_absolute, double)
+def my_flow(numbers: Dataset[ListOfNumbers]) -> Dataset[ListOfPositiveNumbers]:
+    ...
+
+
+dataset = Dataset[ListOfNumbers]()
+dataset['my_numbers'] = ListOfNumbers(["1243", -123, 3425] * 100)
+dataset['my_numbers_2'] = ListOfNumbers([234, -12443, 444] * 100)
+
+output = my_flow.run(dataset)
