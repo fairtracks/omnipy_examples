@@ -28,8 +28,10 @@ def double(numbers: ListOfPositiveNumbers) -> ListOfPositiveNumbers:
     return [num * 2 for num in numbers]
 
 
-@LinearFlowTemplate(make_absolute, double)
-def my_flow(numbers: Dataset[ListOfNumbers]) -> Dataset[ListOfPositiveNumbers]:
+@LinearFlowTemplate(make_absolute,
+                    double,
+                    iterate_over_data_files=True)
+def my_flow(numbers: ListOfNumbers) -> ListOfPositiveNumbers:
     ...
 
 
