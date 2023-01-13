@@ -2,26 +2,20 @@ from copy import copy
 
 import pandas as pd
 import requests
-
 from omnipy import runtime
 from omnipy.compute.flow import FuncFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from omnipy.modules.general.tasks import cast_dataset
-from omnipy.modules.json.models import JsonDataset, JsonDictOfAnyModel, JsonModel
+from omnipy.modules.json.models import (JsonDataset, JsonDictOfAnyModel,
+                                        JsonModel)
 from omnipy.modules.json.util import serialize_to_tarpacked_json_files
 from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.util import serialize_to_tarpacked_csv_files
 from omnipy.modules.tables.models import JsonTableOfStrings
 from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
-                                          transpose_dataset_of_dicts_to_lists)
-import omnipy.modules.json.util
-import omnipy.modules.pandas.util
-import omnipy.modules.raw.util
-omnipy.modules.json.util.ROOT_DIR = './input/bif'
-omnipy.modules.pandas.util.ROOT_DIR = './input/bif'
-omnipy.modules.raw.util.ROOT_DIR = './input/bif'
+                                         transpose_dataset_of_dicts_to_lists)
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False
@@ -162,15 +156,15 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 
 uniprot_7_ds = pandas_magic.run(uniprot_6_ds)
 
-# output
-serialize_to_tarpacked_json_files('1_uniprot_per_infile_ds', uniprot_1_ds)
-serialize_to_tarpacked_json_files('2_uniprot_per_infile_dict_ds', uniprot_2_ds)
-serialize_to_tarpacked_json_files('3_uniprot_nested_list_ds', uniprot_3_ds)
-serialize_to_tarpacked_json_files('4_uniprot_unnested_list_ds', uniprot_4_ds)
-serialize_to_tarpacked_json_files('5_uniprot_tabular_json', uniprot_5_ds)
-serialize_to_tarpacked_csv_files('6_uniprot_tabular_csv', uniprot_5_ds)
-
-serialize_to_tarpacked_csv_files('7_output_csv', uniprot_7_ds)
+# # output
+# serialize_to_tarpacked_json_files('1_uniprot_per_infile_ds', uniprot_1_ds)
+# serialize_to_tarpacked_json_files('2_uniprot_per_infile_dict_ds', uniprot_2_ds)
+# serialize_to_tarpacked_json_files('3_uniprot_nested_list_ds', uniprot_3_ds)
+# serialize_to_tarpacked_json_files('4_uniprot_unnested_list_ds', uniprot_4_ds)
+# serialize_to_tarpacked_json_files('5_uniprot_tabular_json', uniprot_5_ds)
+# serialize_to_tarpacked_csv_files('6_uniprot_tabular_csv', uniprot_5_ds)
+#
+# serialize_to_tarpacked_csv_files('7_output_csv', uniprot_7_ds)
 # results
 #     uniProtkbId
 #     primaryAccession
