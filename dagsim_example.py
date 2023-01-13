@@ -4,7 +4,6 @@ from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from omnipy.modules.general.tasks import import_directory
 from omnipy.modules.json.models import JsonDataset, JsonDict, JsonType
-from omnipy.modules.json.util import serialize_to_tarpacked_json_files
 from omnipy.modules.raw.tasks import modify_datafile_contents
 from omnipy.modules.raw.util import serialize_to_tarpacked_raw_files
 
@@ -42,7 +41,7 @@ data_raw_2 = modify_datafile_contents.run(data_raw, convert_to_json)
 
 @TaskTemplate
 def convert(
-        dataset: Dataset[Model[JsonDict[JsonType]]]
+    dataset: Dataset[Model[JsonDict[JsonType]]]
 ) -> Dataset[Model[JsonDict[JsonDict[JsonType]]]]:
     pass
 
