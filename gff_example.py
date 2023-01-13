@@ -10,9 +10,7 @@ from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.tasks import (concat_dataframes_across_datasets,
                                          extract_columns_as_files, from_csv,
                                          to_csv)
-from omnipy.modules.raw.tasks import (modify_all_lines,
-                                      modify_datafile_contents,
-                                      modify_each_line)
+from omnipy.modules.raw.tasks import modify_all_lines, modify_datafile_contents, modify_each_line
 from omnipy.modules.tables.models import JsonTableOfStrings
 
 runtime.config.engine = 'local'

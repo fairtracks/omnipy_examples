@@ -1,18 +1,11 @@
-from copy import copy
-
 import pandas as pd
 import requests
 from omnipy import runtime
-from omnipy.compute.flow import FuncFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
-from omnipy.data.model import Model
 from omnipy.modules.general.tasks import cast_dataset
-from omnipy.modules.json.models import (JsonDataset, JsonDictOfAnyModel,
-                                        JsonModel)
-from omnipy.modules.json.util import serialize_to_tarpacked_json_files
+from omnipy.modules.json.models import JsonDictOfAnyModel, JsonModel
 from omnipy.modules.pandas.models import PandasDataset
-from omnipy.modules.pandas.util import serialize_to_tarpacked_csv_files
 from omnipy.modules.tables.models import JsonTableOfStrings
 from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
                                          transpose_dataset_of_dicts_to_lists)
@@ -62,7 +55,7 @@ uniprot_1_ds = import_uniprot.run()
 uniprot_2_ds = cast_dataset.run(uniprot_1_ds, cast_model=JsonDictOfAnyModel)
 uniprot_3_ds = transpose_dataset_of_dicts_to_lists.run(uniprot_2_ds)
 uniprot_4_ds = flatten_nested_json_to_list_of_dicts.run(uniprot_3_ds)
-uniprot_5_ds = cast_dataset.refine(name="cast_dataset_copy").run(
+uniprot_5_ds = cast_dataset.refine(name='cast_dataset_copy').run(
     uniprot_4_ds, cast_model=JsonTableOfStrings)
 
 
@@ -78,58 +71,60 @@ uniprot_6_ds = to_pandas.run(uniprot_5_ds)
 
 @TaskTemplate
 def pandas_magic(pandas: PandasDataset) -> PandasDataset:
-    out_dataset = PandasDataset()
-
     #  Get synonym table and clean foreign key
     df_synonym = pandas['results.genes.synonyms']
-    df_synonym['_unifair_ref'] = df_synonym['_unifair_ref'].str.strip(
+    df_synonym['_omnipy_ref'] = df_synonym['_omnipy_ref'].str.strip(
         'results.genes.')
 
     # Get gene table and join with synonym table to get gene foreign id
     df_gene = pandas['results.genes']
-
     df_merge_1 = pd.merge(df_synonym,
                           df_gene,
-                          left_on="_unifair_ref",
-                          right_on='_unifair_id',
-                          how="right")
-    df_merge_1 = df_merge_1.loc[:, ['value', '_unifair_ref_y']]
-    out_dataset['df_merge_1'] = copy(df_merge_1)
-
-    df_merge_1.columns = ['synonym', '_unifair_ref']
-    df_merge_1['_unifair_ref'].replace('results.',
-                                       '',
-                                       inplace=True,
-                                       regex=True)
-    out_dataset['df_merge_1.2'] = df_merge_1
+                          left_on='_omnipy_ref',
+                          right_on='_omnipy_id',
+                          how='right')
+    df_merge_1 = df_merge_1.loc[:, ['value', '_omnipy_ref_y']]
+    df_merge_1.columns = ['synomym', '_omnipy_ref']
+    df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
 
     # print(df_gene)
 
     # Get keywords table and clean foreign key
     df_keywords = pandas['results.keywords']
-    df_keywords['_unifair_ref'].replace('results.',
-                                        '',
-                                        inplace=True,
-                                        regex=True)
-    df_keywords = df_keywords.loc[:, ['_unifair_ref', 'category', 'name']]
+    df_keywords['_omnipy_ref'].replace('results.',
+                                       '',
+                                       inplace=True,
+                                       regex=True)
+    df_keywords = df_keywords.loc[:, ['_omnipy_ref', 'category', 'name']]
 
     # Merge keywords with synonym
     df_merge_2 = pd.merge(df_merge_1,
                           df_keywords,
-                          on="_unifair_ref",
-                          how="right")
+                          on='_omnipy_ref',
+                          how='right')
 
     # Get results table for regene name and primary accession
     df_results = pandas['results']
     df_results = df_results.loc[:, [
-        '_unifair_id', 'primaryAccession', 'uniProtkbId'
+        '_omnipy_id', 'primaryAccession', 'uniProtkbId'
     ]]
     df_merge_final = pd.merge(df_merge_2,
                               df_results,
-                              left_on="_unifair_ref",
-                              right_on='_unifair_id',
-                              how="right")
+                              left_on='_omnipy_ref',
+                              right_on='_omnipy_id',
+                              how='right')
 
+    out_dataset = PandasDatasetandas['results']
+    df_results = df_results.loc[:, [
+        '_omnipy_id', 'primaryAccession', 'uniProtkbId'
+    ]]
+    df_merge_final = pd.merge(df_merge_2,
+                              df_results,
+                              left_on='_omnipy_ref',
+                              right_on='_omnipy_id',
+                              how='right')
+
+    out_dataset = PandasDataset()
     out_dataset['my_table'] = df_merge_final
 
     print(len(df_results.index))

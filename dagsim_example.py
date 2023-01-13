@@ -7,13 +7,6 @@ from omnipy.modules.json.models import JsonDataset, JsonDict, JsonType
 from omnipy.modules.json.util import serialize_to_tarpacked_json_files
 from omnipy.modules.raw.tasks import modify_datafile_contents
 from omnipy.modules.raw.util import serialize_to_tarpacked_raw_files
-import omnipy.modules.json.util
-import omnipy.modules.pandas.util
-import omnipy.modules.raw.util
-omnipy.modules.json.util.ROOT_DIR = './input/bif'
-omnipy.modules.pandas.util.ROOT_DIR = './input/bif'
-omnipy.modules.raw.util.ROOT_DIR = './input/bif'
-
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False
