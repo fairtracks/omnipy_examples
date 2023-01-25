@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 from omnipy import runtime
+from omnipy.api.enums import PersistOutputsOptions
+from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
 from omnipy.modules.general.tasks import cast_dataset
@@ -11,7 +13,9 @@ from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
                                          transpose_dataset_of_dicts_to_lists)
 
 runtime.config.engine = 'local'
-runtime.config.prefect.use_cached_results = False
+# runtime.config.prefect.use_cached_results = False
+runtime.config.job.persist_outputs = 'all'
+runtime.config.job.restore_outputs = 'auto_ignore_params'
 
 
 @TaskTemplate
@@ -51,13 +55,6 @@ def import_uniprot():
 
 # serialize_to_tarpacked_json_files('1_import_unipro', uniprot_dataset)
 
-uniprot_1_ds = import_uniprot.run()
-uniprot_2_ds = cast_dataset.run(uniprot_1_ds, cast_model=JsonDictOfAnyModel)
-uniprot_3_ds = transpose_dataset_of_dicts_to_lists.run(uniprot_2_ds)
-uniprot_4_ds = flatten_nested_json_to_list_of_dicts.run(uniprot_3_ds)
-uniprot_5_ds = cast_dataset.refine(name='cast_dataset_copy').run(
-    uniprot_4_ds, cast_model=JsonTableOfStrings)
-
 
 @TaskTemplate
 def to_pandas(dataset: Dataset[JsonTableOfStrings]) -> PandasDataset:
@@ -66,7 +63,7 @@ def to_pandas(dataset: Dataset[JsonTableOfStrings]) -> PandasDataset:
     return pandas
 
 
-uniprot_6_ds = to_pandas.run(uniprot_5_ds)
+# uniprot_6_ds = to_pandas.run(uniprot_5_ds)
 
 
 @TaskTemplate
@@ -114,16 +111,6 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
                               right_on='_omnipy_id',
                               how='right')
 
-    out_dataset = PandasDatasetandas['results']
-    df_results = df_results.loc[:, [
-        '_omnipy_id', 'primaryAccession', 'uniProtkbId'
-    ]]
-    df_merge_final = pd.merge(df_merge_2,
-                              df_results,
-                              left_on='_omnipy_ref',
-                              right_on='_omnipy_id',
-                              how='right')
-
     out_dataset = PandasDataset()
     out_dataset['my_table'] = df_merge_final
 
@@ -131,6 +118,53 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 
     return out_dataset
 
+
+# @FuncFlowTemplate()
+# def import_and_flatten_uniprot() -> Dataset[JsonTableOfStrings]:
+#     uniprot_1_ds = import_uniprot()
+#     uniprot_2_ds = cast_dataset(uniprot_1_ds, cast_model=JsonDictOfAnyModel)
+#     uniprot_3_ds = transpose_dataset_of_dicts_to_lists(uniprot_2_ds)
+#     uniprot_4_ds = flatten_nested_json_to_list_of_dicts(uniprot_3_ds)
+#
+#     uniprot_5_ds = cast_dataset(uniprot_4_ds, cast_model=JsonTableOfStrings)
+#     return to_pandas(uniprot_5_ds)
+#     # return
+
+cast_json = cast_dataset.refine(fixed_params=dict(
+    cast_model=JsonDictOfAnyModel)),
+
+
+@LinearFlowTemplate(
+    import_uniprot,
+    # cast_json,
+    transpose_dataset_of_dicts_to_lists,
+    flatten_nested_json_to_list_of_dicts,
+    to_pandas,
+)
+def import_and_flatten_uniprot() -> PandasDataset:
+    ...
+
+
+@FuncFlowTemplate
+def import_and_flatten_uniprot_with_magic() -> PandasDataset:
+    uniprot_6_ds = import_and_flatten_uniprot()
+    uniprot_7_ds = pandas_magic(uniprot_6_ds)
+    return uniprot_7_ds
+
+
+# TODO: Way to specify per flow to not preserve task outputs
+# TODO: Bug running cast_json in linear flow (probably due to two argument parameters in cast_dataset)
+# TODO: Error message when forgetting parenthesis when creating Dataset should be improved
+# TODO: Using run() inside flows should give error message
+# TODO: uniprot import is serialized as CSV instead of JSON
+# TODO: Automatic transformation into Output dataset type (remove need for to_pandas)
+# TODO: In examples, separate run files from flow/task definition
+# TODO: Make it simpler to contact REST apis
+# TODO: Increase line length max for Flake, YAPF
+
+# TODO: Next time: "omnify" pandas_magic
+
+import_and_flatten_uniprot_with_magic.run()
 
 # @TaskTemplate
 # def join_a_with_b(pandas_ds: PandasDataset,
@@ -149,11 +183,12 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 #               '_omnipy_id',
 #               'merged_table')
 
-uniprot_7_ds = pandas_magic.run(uniprot_6_ds)
+# uniprot_7_ds = pandas_magic.run(uniprot_6_ds)
 
 # # output
 # serialize_to_tarpacked_json_files('1_uniprot_per_infile_ds', uniprot_1_ds)
-# serialize_to_tarpacked_json_files('2_uniprot_per_infile_dict_ds', uniprot_2_ds)
+# serialize_to_tarpacked_json_files('2_uniprot_per_infile_dict_ds',
+# uniprot_2_ds)
 # serialize_to_tarpacked_json_files('3_uniprot_nested_list_ds', uniprot_3_ds)
 # serialize_to_tarpacked_json_files('4_uniprot_unnested_list_ds', uniprot_4_ds)
 # serialize_to_tarpacked_json_files('5_uniprot_tabular_json', uniprot_5_ds)
