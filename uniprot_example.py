@@ -6,8 +6,10 @@ from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
 from omnipy.modules.general.tasks import cast_dataset
-from omnipy.modules.json.models import JsonDictOfAnyModel, JsonModel
+from omnipy.modules.json.models import (JsonDataset, JsonDictOfAnyModel,
+                                        JsonModel)
 from omnipy.modules.pandas.models import PandasDataset
+from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 from omnipy.modules.tables.models import JsonTableOfStrings
 from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
                                          transpose_dataset_of_dicts_to_lists)
@@ -15,7 +17,7 @@ from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
 runtime.config.engine = 'local'
 # runtime.config.prefect.use_cached_results = False
 runtime.config.job.persist_outputs = 'all'
-runtime.config.job.restore_outputs = 'auto_ignore_params'
+# runtime.config.job.restore_outputs = 'auto_ignore_params'
 
 
 @TaskTemplate
@@ -24,8 +26,8 @@ def import_uniprot():
     api_url = 'https://rest.uniprot.org/uniprotkb/search?query=human%20cdc7'
     response = requests.get(api_url, headers=HEADERS)
     if response.status_code == 200:
-        # dataset = JsonDataset
-        dataset = Dataset[JsonModel]()
+        dataset = JsonDataset()
+        # dataset = Dataset[JsonModel]()
         dataset['uniprotkb'] = response.json()
         return dataset
     else:
@@ -54,14 +56,6 @@ def import_uniprot():
 #     ...
 
 # serialize_to_tarpacked_json_files('1_import_unipro', uniprot_dataset)
-
-
-@TaskTemplate
-def to_pandas(dataset: Dataset[JsonTableOfStrings]) -> PandasDataset:
-    pandas = PandasDataset()
-    pandas.from_data(dataset.to_data())
-    return pandas
-
 
 # uniprot_6_ds = to_pandas.run(uniprot_5_ds)
 
@@ -139,7 +133,7 @@ cast_json = cast_dataset.refine(fixed_params=dict(
     # cast_json,
     transpose_dataset_of_dicts_to_lists,
     flatten_nested_json_to_list_of_dicts,
-    to_pandas,
+    convert_dataset_list_of_dicts_to_pandas,
 )
 def import_and_flatten_uniprot() -> PandasDataset:
     ...
