@@ -1,10 +1,7 @@
-from math import nan
-
-import pytest
 from omnipy.modules.pandas.models import PandasDataset
 from pandas import DataFrame
-
-from table_tasks import join_tables
+import pytest
+from src.omnipy_examples.table_tasks import join_tables
 
 
 @pytest.fixture
