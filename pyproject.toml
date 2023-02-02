@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "omnipy-examples"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
-authors = ["Sveinung Gundersen <sveinugu@gmail.com>, Jeanne Cheneby <jeanne.cheneby@mn.uio.no>"]
+authors = ["Sveinung Gundersen <sveinugu@gmail.com>", "Jeanne Cheneby <jeanne.cheneby@mn.uio.no>"]
 readme = "README.md"
 packages = [{include = "omnipy_examples", from = "src"}]
 
