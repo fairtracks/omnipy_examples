@@ -2,7 +2,7 @@
 name = "omnipy-examples"
 version = "0.1.0"
 description = ""
-authors = ["Sveinung Gundersen <sveinugu@gmail.com>, Jeanne Cheneby"]
+authors = ["Sveinung Gundersen <sveinugu@gmail.com>, Jeanne Cheneby <>"]
 readme = "README.md"
 packages = [{include = "omnipy_examples", from = "src"}]
 
