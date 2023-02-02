@@ -1,5 +1,5 @@
-import pandas as pd
 from omnipy.modules.pandas.models import PandasDataset
+import pandas as pd
 
 
 def join_tables(dataset: PandasDataset) -> PandasDataset:
@@ -15,8 +15,5 @@ def join_tables(dataset: PandasDataset) -> PandasDataset:
     common_headers = set(df_1.columns) & set(df_2.columns)
     assert len(common_headers) == 1
 
-    output_dataset[output_table_name] = pd.merge(df_1,
-                                                 df_2,
-                                                 on=common_headers.pop(),
-                                                 how='outer')
+    output_dataset[output_table_name] = pd.merge(df_1, df_2, on=common_headers.pop(), how='outer')
     return output_dataset

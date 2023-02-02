@@ -1,18 +1,15 @@
-import pandas as pd
-import requests
 from omnipy import runtime
-from omnipy.api.enums import PersistOutputsOptions
 from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
-from omnipy.data.dataset import Dataset
 from omnipy.modules.general.tasks import cast_dataset
-from omnipy.modules.json.models import (JsonDataset, JsonDictOfAnyModel,
-                                        JsonModel)
+from omnipy.modules.json.datasets import JsonDataset
+from omnipy.modules.json.flows import flatten_nested_json
+from omnipy.modules.json.models import JsonDictOfAnyModel
+from omnipy.modules.json.tasks import transpose_dataset_of_dicts_to_lists
 from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
-from omnipy.modules.tables.models import JsonTableOfStrings
-from omnipy.modules.tables.tasks import (flatten_nested_json_to_list_of_dicts,
-                                         transpose_dataset_of_dicts_to_lists)
+import pandas as pd
+import requests
 
 runtime.config.engine = 'local'
 # runtime.config.prefect.use_cached_results = False
@@ -27,90 +24,10 @@ def import_uniprot():
     response = requests.get(api_url, headers=HEADERS)
     if response.status_code == 200:
         dataset = JsonDataset()
-        # dataset = Dataset[JsonModel]()
         dataset['uniprotkb'] = response.json()
         return dataset
     else:
         raise RuntimeError('No result found')
-
-
-# @FuncFlowTemplate
-# def uniprot():
-#     uniprot_ds = import_uniprot()
-#     uniprot_ds = cast_dataset(uniprot_ds, cast_model=JsonDictOfAnyModel)
-#     uniprot_ds = transpose_dataset_of_dicts_to_lists(uniprot_ds)
-#     uniprot_ds = extract_all_nested_lists(uniprot_ds)
-#     return cast_to_table_of_strings_and_lists(uniprot_ds)
-#
-
-# @LinearFlowTemplate(
-#     import_uniprot,
-#     cast_dataset.refine(fixed_params=dict(
-#         cast_model=JsonDictOfAnyModel)),  # should be made automatic
-#     transpose_dataset_of_dicts_to_lists,
-#     extract_all_nested_lists,
-#     cast_dataset.refine(fixed_params=dict(
-#         cast_model=JsonTableOfStrings)),  # should be made automatic
-# )
-# def uniprot() -> Dataset[JsonTableOfStrings]:
-#     ...
-
-# serialize_to_tarpacked_json_files('1_import_unipro', uniprot_dataset)
-
-# uniprot_6_ds = to_pandas.run(uniprot_5_ds)
-
-
-@TaskTemplate
-def pandas_magic(pandas: PandasDataset) -> PandasDataset:
-    #  Get synonym table and clean foreign key
-    df_synonym = pandas['results.genes.synonyms']
-    df_synonym['_omnipy_ref'] = df_synonym['_omnipy_ref'].str.strip(
-        'results.genes.')
-
-    # Get gene table and join with synonym table to get gene foreign id
-    df_gene = pandas['results.genes']
-    df_merge_1 = pd.merge(df_synonym,
-                          df_gene,
-                          left_on='_omnipy_ref',
-                          right_on='_omnipy_id',
-                          how='right')
-    df_merge_1 = df_merge_1.loc[:, ['value', '_omnipy_ref_y']]
-    df_merge_1.columns = ['synomym', '_omnipy_ref']
-    df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
-
-    # print(df_gene)
-
-    # Get keywords table and clean foreign key
-    df_keywords = pandas['results.keywords']
-    df_keywords['_omnipy_ref'].replace('results.',
-                                       '',
-                                       inplace=True,
-                                       regex=True)
-    df_keywords = df_keywords.loc[:, ['_omnipy_ref', 'category', 'name']]
-
-    # Merge keywords with synonym
-    df_merge_2 = pd.merge(df_merge_1,
-                          df_keywords,
-                          on='_omnipy_ref',
-                          how='right')
-
-    # Get results table for regene name and primary accession
-    df_results = pandas['results']
-    df_results = df_results.loc[:, [
-        '_omnipy_id', 'primaryAccession', 'uniProtkbId'
-    ]]
-    df_merge_final = pd.merge(df_merge_2,
-                              df_results,
-                              left_on='_omnipy_ref',
-                              right_on='_omnipy_id',
-                              how='right')
-
-    out_dataset = PandasDataset()
-    out_dataset['my_table'] = df_merge_final
-
-    print(len(df_results.index))
-
-    return out_dataset
 
 
 # @FuncFlowTemplate()
@@ -124,19 +41,54 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 #     return to_pandas(uniprot_5_ds)
 #     # return
 
-cast_json = cast_dataset.refine(fixed_params=dict(
-    cast_model=JsonDictOfAnyModel)),
+cast_json = cast_dataset.refine(fixed_params=dict(cast_model=JsonDictOfAnyModel)),
 
 
 @LinearFlowTemplate(
-    import_uniprot,
-    # cast_json,
+    import_uniprot,  # cast_json,
     transpose_dataset_of_dicts_to_lists,
-    flatten_nested_json_to_list_of_dicts,
-    convert_dataset_list_of_dicts_to_pandas,
-)
+    flatten_nested_json,
+    convert_dataset_list_of_dicts_to_pandas)
 def import_and_flatten_uniprot() -> PandasDataset:
     ...
+
+
+@TaskTemplate
+def pandas_magic(pandas: PandasDataset) -> PandasDataset:
+    #  Get synonym table and clean foreign key
+    df_synonym = pandas['results.genes.synonyms']
+    df_synonym['_omnipy_ref'] = df_synonym['_omnipy_ref'].str.strip('results.genes.')
+
+    # Get gene table and join with synonym table to get gene foreign id
+    df_gene = pandas['results.genes']
+    df_merge_1 = pd.merge(
+        df_synonym, df_gene, left_on='_omnipy_ref', right_on='_omnipy_id', how='right')
+    df_merge_1 = df_merge_1.loc[:, ['value', '_omnipy_ref_y']]
+    df_merge_1.columns = ['synomym', '_omnipy_ref']
+    df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
+
+    # print(df_gene)
+
+    # Get keywords table and clean foreign key
+    df_keywords = pandas['results.keywords']
+    df_keywords['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
+    df_keywords = df_keywords.loc[:, ['_omnipy_ref', 'category', 'name']]
+
+    # Merge keywords with synonym
+    df_merge_2 = pd.merge(df_merge_1, df_keywords, on='_omnipy_ref', how='right')
+
+    # Get results table for regene name and primary accession
+    df_results = pandas['results']
+    df_results = df_results.loc[:, ['_omnipy_id', 'primaryAccession', 'uniProtkbId']]
+    df_merge_final = pd.merge(
+        df_merge_2, df_results, left_on='_omnipy_ref', right_on='_omnipy_id', how='right')
+
+    out_dataset = PandasDataset()
+    out_dataset['my_table'] = df_merge_final
+
+    print(len(df_results.index))
+
+    return out_dataset
 
 
 @FuncFlowTemplate

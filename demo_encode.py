@@ -1,11 +1,15 @@
 from omnipy import runtime
-from omnipy.compute.flow import FuncFlowTemplate
+from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.modules.fairtracks.tasks import import_dataset_from_encode
 from omnipy.modules.general.tasks import cast_dataset
+from omnipy.modules.json.flows import flatten_nested_json
 from omnipy.modules.json.models import JsonDictOfAnyModel
 from omnipy.modules.json.util import serialize_to_tarpacked_json_files
+from omnipy.modules.pandas.models import PandasDataset
+from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 from omnipy.modules.pandas.util import serialize_to_tarpacked_csv_files
-from omnipy.modules.tables.tasks import flatten_nested_json_to_list_of_dicts, remove_columns
+import omnipy.modules.tables.models
+from omnipy.modules.tables.tasks import remove_columns
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False
@@ -15,26 +19,8 @@ runtime.config.prefect.use_cached_results = False
 #     fixed_params=dict(cast_model=JsonDictOfAnyModel),
 # )
 
-encode_json = import_dataset_from_encode.run(
-    endpoints=[
-        'experiment',
-        'biosample',
-    ],
-    max_data_item_count=25,
-)
-# encode_json_pruned = remove_columns.run(
-#     encode_json, column_keys_for_data_items=dict(
-#         experiment=['audit'],
-#         biosample=['audit'],
-#     ))
+# encode_json_pruned =
 # encode_json_dict = cast_to_dict_on_top.run(encode_json)
-splitted_encode_json = flatten_nested_json_to_list_of_dicts.run(encode_json)
-
-serialize_to_tarpacked_json_files('encode_json', encode_json)
-serialize_to_tarpacked_json_files('splitted_encode_json', splitted_encode_json)
-# serialize_to_tarpacked_csv_files('encode_json', encode_json)
-serialize_to_tarpacked_csv_files('splitted_encode_csv', splitted_encode_json)
-# serialize_to_tarpacked_csv_files('encode_json_pruned', encode_json_pruned)
 
 # runtime.config.engine = 'prefect'
 # runtime.config.prefect.use_cached_results = True
@@ -62,3 +48,28 @@ serialize_to_tarpacked_csv_files('splitted_encode_csv', splitted_encode_json)
 #
 #
 # import_encode_data.run()
+
+
+@LinearFlowTemplate(
+    import_dataset_from_encode.refine(
+        fixed_params=dict(
+            endpoints=[
+                'experiment',
+                'biosample',
+            ],
+            max_data_item_count=25,
+        )),
+    flatten_nested_json,
+    remove_columns.refine(
+        fixed_params=dict(
+            column_keys_for_data_items=dict(
+                experiment=['audit'],
+                biosample=['audit'],
+            ))),
+    convert_dataset_list_of_dicts_to_pandas,
+)
+def import_and_flatten_encode_data() -> PandasDataset:
+    ...
+
+
+import_and_flatten_encode_data.run()

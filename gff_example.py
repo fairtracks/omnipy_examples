@@ -2,19 +2,17 @@ import os
 from typing import List, Optional, Tuple
 
 from omnipy import runtime
-from omnipy.compute.flow import (DagFlowTemplate, FuncFlowTemplate,
-                                 LinearFlowTemplate)
+from omnipy.compute.flow import DagFlowTemplate, FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from omnipy.modules.general.tasks import import_directory, split_dataset
 from omnipy.modules.pandas.models import PandasDataset, PandasModel
 from omnipy.modules.pandas.tasks import (concat_dataframes_across_datasets,
-                                         extract_columns_as_files, from_csv,
-                                         to_csv)
-from omnipy.modules.raw.tasks import (modify_all_lines,
-                                      modify_datafile_contents,
-                                      modify_each_line)
+                                         convert_dataset_csv_to_pandas,
+                                         convert_dataset_pandas_to_csv,
+                                         extract_columns_as_files)
+from omnipy.modules.raw.tasks import modify_all_lines, modify_datafile_contents, modify_each_line
 from omnipy.modules.tables.models import JsonTableOfStrings
 
 runtime.config.engine = 'local'
@@ -22,10 +20,7 @@ runtime.config.prefect.use_cached_results = False
 
 # Constants
 
-GFF_COLS = [
-    'seqid', 'source', 'type', 'start', 'end', 'score', 'strand', 'phase',
-    'attributes'
-]
+GFF_COLS = ['seqid', 'source', 'type', 'start', 'end', 'score', 'strand', 'phase', 'attributes']
 ATTRIB_COL = GFF_COLS[-1]
 
 # Functions
@@ -47,9 +42,7 @@ def attrib_df_names(dataset: Dataset[Model[object]]) -> List[str]:
 
 @TaskTemplate()
 def transform_attr_line_to_json(_line_no: int, line: str) -> str:
-    items = [
-        item.strip().split('=') for item in line.strip().split(';') if item
-    ]
+    items = [item.strip().split('=') for item in line.strip().split(';') if item]
     json_obj_items = [f'"{key}": "{val}"' for key, val in items]
     return f'{{{", ".join(json_obj_items)}}},' + os.linesep
 
@@ -60,21 +53,17 @@ def transform_attr_line_to_json(_line_no: int, line: str) -> str:
 @LinearFlowTemplate(
     import_directory.refine(
         name='import_gff_files',
-        fixed_params=dict(suffix='.gff', model=Model[str]),
+        fixed_params=dict(include_suffixes=('.gff',), model=Model[str]),
         persist_outputs='disabled',
     ),
     modify_all_lines.refine(
         name='slice_lines',
-        fixed_params=dict(modify_all_lines_func=slice_lines_func,
-                          start=0,
-                          end=1000),
+        fixed_params=dict(modify_all_lines_func=slice_lines_func, start=0, end=1000),
         # param_key_map=dict(end='num_lines'),
     ),
-    from_csv.refine(
+    convert_dataset_csv_to_pandas.refine(
         name='convert_gff_to_pandas',
-        fixed_params=dict(delimiter='\t',
-                          first_row_as_col_names=False,
-                          col_names=GFF_COLS),
+        fixed_params=dict(delimiter='\t', first_row_as_col_names=False, col_names=GFF_COLS),
     ),
     restore_outputs='disabled')
 def import_gff_as_pandas(directory: str) -> PandasDataset:
@@ -97,7 +86,7 @@ def extract_attrib_col_as_separate_dataset(
 
 
 @LinearFlowTemplate(
-    to_csv.refine(fixed_params=dict(first_row_as_col_names=False)),
+    convert_dataset_pandas_to_csv.refine(fixed_params=dict(first_row_as_col_names=False)),
     modify_each_line.refine(
         name='transform_all_lines_to_json',
         fixed_params=dict(modify_line_func=transform_attr_line_to_json),
@@ -141,10 +130,10 @@ import_gff_as_pandas.run('input/gff')
 #
 #     data_2 = slice_lines(data, start=0, end=1000)
 #
-#     pd_data_3 = from_csv(data_2,
-#                          delimiter='\t',
-#                          first_row_as_col_names=False,
-#                          col_names=GFF_COLS)
+#     pd_data_3 = convert_dataset_csv_to_pandas(data_2,
+#                                               delimiter='\t',
+#                                               first_row_as_col_names=False,
+#                                               col_names=GFF_COLS)
 #
 #     pd_data_4 = extract_columns_as_files(pd_data_3, [ATTRIB_COL])
 #

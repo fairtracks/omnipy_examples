@@ -1,11 +1,8 @@
 from omnipy import runtime
-from omnipy.compute.task import TaskTemplate
-from omnipy.data.dataset import Dataset
-from omnipy.data.model import Model
+from omnipy.compute.flow import LinearFlowTemplate
 from omnipy.modules.general.tasks import import_directory
-from omnipy.modules.json.models import JsonDataset, JsonDict, JsonType
+from omnipy.modules.json.datasets import JsonDictOfDictsOfAnyDataset
 from omnipy.modules.raw.tasks import modify_datafile_contents
-from omnipy.modules.raw.util import serialize_to_tarpacked_raw_files
 
 runtime.config.engine = 'local'
 runtime.config.prefect.use_cached_results = False
@@ -35,16 +32,18 @@ def convert_to_json(contents: str, **kwargs: object):
     return f'"{contents}"'
 
 
-data_raw = import_directory.run('input/bif', suffix='.bif')
-data_raw_2 = modify_datafile_contents.run(data_raw, convert_to_json)
+@LinearFlowTemplate(
+    import_directory.refine(
+        name='import_and_convert_bif_files_to_json',
+        fixed_params=dict(include_suffixes=('.bif',)),
+    ),
+    modify_datafile_contents.refine(
+        name='modify_bif_files',
+        fixed_params=dict(modify_contents_func=convert_to_json),
+    ),
+)
+def import_and_convert_bif_files_to_json(dir_path: str) -> JsonDictOfDictsOfAnyDataset:
+    ...
 
 
-@TaskTemplate
-def convert(
-    dataset: Dataset[Model[JsonDict[JsonType]]]
-) -> Dataset[Model[JsonDict[JsonDict[JsonType]]]]:
-    pass
-
-
-serialize_to_tarpacked_raw_files('1_data_raw', data_raw)
-serialize_to_tarpacked_raw_files('2_data_raw', data_raw_2)
+import_and_convert_bif_files_to_json.run('input/bif')
