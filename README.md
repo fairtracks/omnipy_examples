@@ -4,13 +4,9 @@ Example projects that that makes use of the omnipy package for type-driven, scal
 
 ## Main installation instructions
 
-- Install Poetry:
-  - `curl -sSL https://install.python-poetry.org | python3 -`
-- Install Python 3.10 through e.g. Conda, or directly in your IDE:
-  - `conda create -env myenv python=3.10`
-  - `conda activate myenv`
+
 - Install dependencies
-  - `poetry install`
+  - `pip install`
 - Run example scripts
   - `scripts/uniprot_example` or `python scripts/uniprot_example.py`
 - Output will appear in the `data` directory with a timestamp. 
@@ -18,6 +14,9 @@ Example projects that that makes use of the omnipy package for type-driven, scal
     excellent for this
 
 ### Development setup
+
+- Install Poetry:
+  - `curl -sSL https://install.python-poetry.org | python3 -`
 
 - Install dependencies:
   - `poetry install --with dev`

@@ -5,7 +5,9 @@ description = ""
 authors = ["Sveinung Gundersen <sveinugu@gmail.com>", "Jeanne Cheneby <jeanne.cheneby@mn.uio.no>"]
 readme = "README.md"
 packages = [{include = "omnipy_examples", from = "src"}]
-
+include = [
+    { path = "input" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
@@ -18,6 +20,9 @@ flake8 = "^6.0.0"
 isort = "^5.10.1"
 flake8-quotes = "^3.3.1"
 mypy = "^0.991"
+
+[tool.poetry.scripts]
+dagsim_example = "omnipy_examples.scripts.dagsim_example:main"
 
 [build-system]
 requires = ["poetry-core"]
