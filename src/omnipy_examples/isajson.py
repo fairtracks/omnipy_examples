@@ -1,14 +1,9 @@
-from omnipy import runtime
 from omnipy.compute.flow import LinearFlowTemplate
 from omnipy.modules.general.tasks import import_directory
 from omnipy.modules.json.flows import flatten_nested_json
 from omnipy.modules.json.tasks import (convert_dataset_string_to_json,
                                        transpose_dataset_of_dicts_to_lists)
 from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
-
-runtime.config.engine = 'local'
-runtime.config.prefect.use_cached_results = False
-runtime.config.job.persist_outputs = 'all'
 
 
 @LinearFlowTemplate(
@@ -23,6 +18,3 @@ runtime.config.job.persist_outputs = 'all'
 )
 def convert_isa_json_to_relational_tables(dir_path: str):
     ...
-
-
-convert_isa_json_to_relational_tables.run('input/isa-json')

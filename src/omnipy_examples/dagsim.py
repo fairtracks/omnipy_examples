@@ -1,11 +1,7 @@
-from omnipy import runtime
 from omnipy.compute.flow import LinearFlowTemplate
 from omnipy.modules.general.tasks import import_directory
 from omnipy.modules.json.datasets import JsonDictOfDictsOfAnyDataset
 from omnipy.modules.raw.tasks import modify_datafile_contents
-
-runtime.config.engine = 'local'
-runtime.config.prefect.use_cached_results = False
 
 # from omnipy.modules.r_stat import r
 
@@ -44,6 +40,3 @@ def convert_to_json(contents: str, **kwargs: object):
 )
 def import_and_convert_bif_files_to_json(dir_path: str) -> JsonDictOfDictsOfAnyDataset:
     ...
-
-
-import_and_convert_bif_files_to_json.run('input/bif')

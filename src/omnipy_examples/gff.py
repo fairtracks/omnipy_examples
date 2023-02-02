@@ -1,7 +1,6 @@
 import os
 from typing import List, Optional, Tuple
 
-from omnipy import runtime
 from omnipy.compute.flow import DagFlowTemplate, FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
@@ -14,9 +13,6 @@ from omnipy.modules.pandas.tasks import (concat_dataframes_across_datasets,
                                          extract_columns_as_files)
 from omnipy.modules.raw.tasks import modify_all_lines, modify_datafile_contents, modify_each_line
 from omnipy.modules.tables.models import JsonTableOfStrings
-
-runtime.config.engine = 'local'
-runtime.config.prefect.use_cached_results = False
 
 # Constants
 
@@ -100,7 +96,6 @@ def convert_attrib_col_to_table(dataset: PandasDataset) -> PandasDataset:
     ...
 
 
-import_gff_as_pandas.run('input/gff')
 # import_gff_as_pandas.run('input/gff', num_lines=1000)
 
 #

@@ -1,4 +1,3 @@
-from omnipy import runtime
 from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.modules.fairtracks.tasks import import_dataset_from_encode
 from omnipy.modules.general.tasks import cast_dataset
@@ -10,9 +9,6 @@ from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 from omnipy.modules.pandas.util import serialize_to_tarpacked_csv_files
 import omnipy.modules.tables.models
 from omnipy.modules.tables.tasks import remove_columns
-
-runtime.config.engine = 'local'
-runtime.config.prefect.use_cached_results = False
 
 # cast_to_dict_on_top = cast_dataset.refine(
 #     name='cast_to_dict_on_top',
@@ -70,6 +66,3 @@ runtime.config.prefect.use_cached_results = False
 )
 def import_and_flatten_encode_data() -> PandasDataset:
     ...
-
-
-import_and_flatten_encode_data.run()

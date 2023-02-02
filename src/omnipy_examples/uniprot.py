@@ -1,4 +1,3 @@
-from omnipy import runtime
 from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
 from omnipy.modules.general.tasks import cast_dataset
@@ -10,11 +9,6 @@ from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 import pandas as pd
 import requests
-
-runtime.config.engine = 'local'
-# runtime.config.prefect.use_cached_results = False
-runtime.config.job.persist_outputs = 'all'
-# runtime.config.job.restore_outputs = 'auto_ignore_params'
 
 
 @TaskTemplate
@@ -109,8 +103,6 @@ def import_and_flatten_uniprot_with_magic() -> PandasDataset:
 # TODO: Increase line length max for Flake, YAPF
 
 # TODO: Next time: "omnify" pandas_magic
-
-import_and_flatten_uniprot_with_magic.run()
 
 # @TaskTemplate
 # def join_a_with_b(pandas_ds: PandasDataset,
