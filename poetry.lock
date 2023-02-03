@@ -1257,14 +1257,14 @@ signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
 name = "omnipy"
-version = "0.8.1"
+version = "0.8.2"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "omnipy-0.8.1-py3-none-any.whl", hash = "sha256:2be28cd811e80d7759f59a0105cc957c8d50a4a7848e6da26bccbd2bf590a5a8"},
-    {file = "omnipy-0.8.1.tar.gz", hash = "sha256:c01c773d79f090627f97082d6122bb6ceeed1ff68b8689eddba0dc812c9241d9"},
+    {file = "omnipy-0.8.2-py3-none-any.whl", hash = "sha256:d4b4424cd6ccdb34b9088387de9b57934ce989bb5124fed216a380acd6742342"},
+    {file = "omnipy-0.8.2.tar.gz", hash = "sha256:1b88ae183e5a7caf0984e5471b15f5c91cd8e60a2cbc1c7a869ecc0480ecb905"},
 ]
 
 [package.dependencies]
@@ -1274,7 +1274,7 @@ inflection = ">=0.5.1,<0.6.0"
 mypy = ">=0.991,<0.992"
 orjson = ">=3.8.0,<4.0.0"
 pandas = ">=1.2.4,<2.0.0"
-prefect = ">=2.6.9,<3.0.0"
+prefect = ">=2.7.3,<3.0.0"
 pydantic = ">=1.10.2,<2.0.0"
 pytest-asyncio = ">=0.20.2,<0.21.0"
 pytest-cases = ">=3.6.13,<4.0.0"
