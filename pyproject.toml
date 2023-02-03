@@ -13,6 +13,8 @@ include = [
 python = ">=3.10,<4.0"
 typing-inspect = "^0.8.0"
 omnipy = "^0.8.1"
+typer = {extras = ["all"], version = "^0.7.0"}
+omnipy-example-data = "^0.1.0"
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.32.0"
@@ -22,7 +24,7 @@ flake8-quotes = "^3.3.1"
 mypy = "^0.991"
 
 [tool.poetry.scripts]
-dagsim_example = "omnipy_examples.scripts.dagsim_example:main"
+omnipy-examples = "omnipy_examples.main:app"
 
 [build-system]
 requires = ["poetry-core"]
