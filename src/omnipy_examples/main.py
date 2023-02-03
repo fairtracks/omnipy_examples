@@ -19,9 +19,9 @@ installed_example_data_path = get_path_to_example_data()
 
 
 @app.command()
-def dagsim(dir_path: str = installed_example_data_path.joinpath('bif')):
+def dagsim(input_dir: str = installed_example_data_path.joinpath('bif')):
     from omnipy_examples.dagsim import import_and_convert_bif_files_to_json
-    import_and_convert_bif_files_to_json.run(dir_path)
+    import_and_convert_bif_files_to_json.run(input_dir)
 
 
 @app.command()
@@ -31,15 +31,15 @@ def encode():
 
 
 @app.command()
-def gff(dir_path: str = installed_example_data_path.joinpath('gff')):
+def gff(input_dir: str = installed_example_data_path.joinpath('gff')):
     from omnipy_examples.gff import import_gff_as_pandas
-    import_gff_as_pandas.run(dir_path)
+    import_gff_as_pandas.run(input_dir)
 
 
 @app.command()
-def isajson(dir_path: str = installed_example_data_path.joinpath('isa-json')):
+def isajson(input_dir: str = installed_example_data_path.joinpath('isa-json')):
     from omnipy_examples.isajson import convert_isa_json_to_relational_tables
-    convert_isa_json_to_relational_tables.run(dir_path)
+    convert_isa_json_to_relational_tables.run(input_dir)
 
 
 @app.command()
