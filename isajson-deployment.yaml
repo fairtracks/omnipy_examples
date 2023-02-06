@@ -1,0 +1,40 @@
+###
+### A complete description of a Prefect Deployment for flow 'isajson'
+###
+name: isajson
+description: null
+version: a59130981e6b092f9dc5d30eb4f0e3d6
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+work_pool_name: null
+tags: []
+parameters: {}
+schedule: null
+is_schedule_active: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: isajson
+manifest_path: null
+storage: null
+path: /Users/sveinugu/PycharmProjects/omnipy_examples
+entrypoint: src/omnipy_examples/deployment.py:isajson_prefect
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
+timestamp: '2023-02-06T12:56:31.047055+00:00'
