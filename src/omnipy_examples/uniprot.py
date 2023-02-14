@@ -61,8 +61,6 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     df_merge_1.columns = ['synomym', '_omnipy_ref']
     df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
 
-    # print(df_gene)
-
     # Get keywords table and clean foreign key
     df_keywords = pandas['results.keywords']
     df_keywords['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
@@ -79,8 +77,6 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 
     out_dataset = PandasDataset()
     out_dataset['my_table'] = df_merge_final
-
-    print(len(df_results.index))
 
     return out_dataset
 
