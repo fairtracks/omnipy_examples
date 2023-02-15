@@ -48,6 +48,13 @@ def uniprot():
     import_and_flatten_uniprot_with_magic.run()
 
 
+@app.command()
+def chatgpt():
+    from omnipy_examples.chatgpt import \
+        get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop
+    get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
+
+
 @app.callback()
 def main(output_dir: str = runtime.config.job.persist_data_dir_path,
          engine: EngineChoice = 'local',
