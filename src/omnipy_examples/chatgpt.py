@@ -193,7 +193,7 @@ def commit_info_to_github_repo(paper: PaperInfoWithPromptAndInterpretation,
         path=f'papers/{filename}.txt',
         message=f'Adding "{paper.title}"',
         content=contents.encode('utf8'),
-        branch='finse_test')
+        branch='wp3_finse_test')
 
     # Commit the changes with a commit message
     # last_commit = list(repo.commits())[-1]
@@ -234,7 +234,7 @@ def get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop(
 def main():
     # generate_response.run(q)
     # asyncio.run(generate_response.run(q))
-    get_chatgpt_interpretation_of_biorxiv_entries_and_commit.run()
+    get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
 
 
 # await print(generate_response('What is ChatGPT?'))

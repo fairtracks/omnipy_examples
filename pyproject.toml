@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omnipy-examples"
-version = "0.3.0"
+version = "0.3.1"
 description = ""
 authors = ["Sveinung Gundersen <sveinugu@gmail.com>", "Jeanne Cheneby <jeanne.cheneby@mn.uio.no>"]
 readme = "README.md"
@@ -17,6 +17,7 @@ typer = {extras = ["all"], version = "^0.7.0"}
 omnipy-example-data = "^0.1.0"
 reader = "^3.4"
 github3-py = "^3.2.0"
+s3fs = "^2023.1.0"
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.32.0"
