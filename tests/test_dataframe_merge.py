@@ -1,3 +1,5 @@
+import os
+
 from omnipy.modules.pandas.models import PandasDataset
 from pandas import DataFrame
 import pytest
@@ -5,7 +7,7 @@ from src.omnipy_examples.table_tasks import join_tables
 
 
 @pytest.fixture
-def table_a():
+def table_abc():
     return DataFrame(
         [
             ['abc', 123, True],
@@ -17,7 +19,7 @@ def table_a():
 
 
 @pytest.fixture
-def table_b():
+def table_dbe():
     return DataFrame(
         [
             [1.2, 345, 34],
@@ -29,7 +31,7 @@ def table_b():
 
 
 @pytest.fixture
-def table_c():
+def table_dbe2():
     return DataFrame(
         [
             [1.2, 345, 34],
@@ -40,15 +42,27 @@ def table_c():
     )
 
 
-def test_join_tables_on_column(table_a, table_b):
+@pytest.fixture
+def table_bce():
+    return DataFrame(
+        [
+            [345, True, 34],
+            [234, False, 23],
+            [123, True, 34],
+        ],
+        columns=['B', 'C', 'E'],
+    )
+
+
+def test_default_outer_join_tables_on_column_all_matching(table_abc, table_dbe):
     dataset = PandasDataset()
-    dataset['table_a'] = table_a
-    dataset['table_b'] = table_b
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe'] = table_dbe
 
     joined_dataset = join_tables(dataset)
 
     assert joined_dataset.to_data() == {
-        'table_a_join_table_b': [
+        'table_abc_join_table_dbe': [
             dict(A='abc', B=123, C=True, D=3.2, E=34),
             dict(A='bcd', B=234, C=False, D=3.4, E=23),
             dict(A='cde', B=345, C=True, D=1.2, E=34),
@@ -56,11 +70,148 @@ def test_join_tables_on_column(table_a, table_b):
     }
 
 
+@pytest.mark.skipif(
+    os.getenv('OMNIPY_FORCE_SKIPPED_TEST') != '1',
+    reason="TODO: Missing data support in Pandas is awful")
+def test_default_outer_join_tables_on_column_some_matching(table_abc, table_dbe2):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe2'] = table_dbe2
+
+    joined_dataset = join_tables(dataset)
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe2': [
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+            dict(A='bcd', B=234, C=False, D=None, E=None),
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+            dict(A=None, B=432, C=None, D=3.4, E=23),
+        ]
+    }
+
+
+def test_inner_join_tables_on_column_all_matching(table_abc, table_dbe):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe'] = table_dbe
+
+    joined_dataset = join_tables(dataset, join_type='inner')
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe': [
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+            dict(A='bcd', B=234, C=False, D=3.4, E=23),
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+        ]
+    }
+
+
+def test_inner_join_tables_on_column_some_matching(table_abc, table_dbe2):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe2'] = table_dbe2
+
+    joined_dataset = join_tables(dataset, join_type='inner')
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe2': [
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+        ]
+    }
+
+
+def test_left_join_tables_on_column_all_matching(table_abc, table_dbe):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe'] = table_dbe
+
+    joined_dataset = join_tables(dataset, join_type='left')
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe': [
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+            dict(A='bcd', B=234, C=False, D=3.4, E=23),
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+        ]
+    }
+
+
+@pytest.mark.skipif(
+    os.getenv('OMNIPY_FORCE_SKIPPED_TEST') != '1',
+    reason="TODO: Missing data support in Pandas is awful")
+def test_left_join_tables_on_column_some_matching(table_abc, table_dbe2):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe2'] = table_dbe2
+
+    joined_dataset = join_tables(dataset, join_type='left')
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe2': [
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+            dict(A='bcd', B=234, C=False, D=None, E=None),
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+        ]
+    }
+
+
+def test_right_join_tables_on_column_all_matching(table_abc, table_dbe):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe'] = table_dbe
+
+    joined_dataset = join_tables(dataset, join_type='right')
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe': [
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+            dict(A='bcd', B=234, C=False, D=3.4, E=23),
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+        ]
+    }
+
+
+@pytest.mark.skipif(
+    os.getenv('OMNIPY_FORCE_SKIPPED_TEST') != '1',
+    reason="TODO: Missing data support in Pandas is awful")
+def test_right_join_tables_on_column_some_matching(table_abc, table_dbe2):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_dbe2'] = table_dbe2
+
+    joined_dataset = join_tables(dataset, join_type='right')
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_dbe2': [
+            dict(A='cde', B=345, C=True, D=1.2, E=34),
+            dict(A=None, B=432, C=None, D=3.4, E=23),
+            dict(A='abc', B=123, C=True, D=3.2, E=34),
+        ]
+    }
+
+
+# def test_join_tables_on_column_missing_data(table_abc, table_dbe2):
+#     dataset = PandasDataset()
+#     dataset['table_abc'] = table_abc
+#     dataset['table_dbe2'] = table_dbe2
+#
+#     joined_dataset = join_tables(dataset)
+#
+#     assert joined_dataset.to_data() == {
+#         'table_a_join_table_b': [
+#             dict(A='abc', B=123, C=True, D=3.2, E=34),
+#             dict(A='bcd', B=234, C=False, D=3.4, E=23),
+#             dict(A='cde', B=345, C=True, D=1.2, E=34),
+#         ]
+#     }
+
 # Further tests
-# TODO: Missing data (e.g. table_a + table_c)
+# TODO: Missing data (e.g. table_abc + table_dbe2)
 # TODO: Multiple tables
 # TODO: Multiple columns that are the same
-# TODO: Different column in A and B
+# TODO: Different column in A and B - don't match column names
+# TODO: Different column in A and B - match column names
 # TODO: Type of merge: Inner, Outer, Left, Right
 # TODO: Empty dataframe
 # TODO: Multiple matching rows
