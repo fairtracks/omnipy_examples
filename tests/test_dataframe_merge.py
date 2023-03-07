@@ -72,7 +72,7 @@ def test_default_outer_join_tables_on_column_all_matching(table_abc, table_dbe):
 
 @pytest.mark.skipif(
     os.getenv('OMNIPY_FORCE_SKIPPED_TEST') != '1',
-    reason="TODO: Missing data support in Pandas is awful")
+    reason='TODO: Missing data support in Pandas is awful')
 def test_default_outer_join_tables_on_column_some_matching(table_abc, table_dbe2):
     dataset = PandasDataset()
     dataset['table_abc'] = table_abc
@@ -139,7 +139,7 @@ def test_left_join_tables_on_column_all_matching(table_abc, table_dbe):
 
 @pytest.mark.skipif(
     os.getenv('OMNIPY_FORCE_SKIPPED_TEST') != '1',
-    reason="TODO: Missing data support in Pandas is awful")
+    reason='TODO: Missing data support in Pandas is awful')
 def test_left_join_tables_on_column_some_matching(table_abc, table_dbe2):
     dataset = PandasDataset()
     dataset['table_abc'] = table_abc
@@ -174,7 +174,7 @@ def test_right_join_tables_on_column_all_matching(table_abc, table_dbe):
 
 @pytest.mark.skipif(
     os.getenv('OMNIPY_FORCE_SKIPPED_TEST') != '1',
-    reason="TODO: Missing data support in Pandas is awful")
+    reason='TODO: Missing data support in Pandas is awful')
 def test_right_join_tables_on_column_some_matching(table_abc, table_dbe2):
     dataset = PandasDataset()
     dataset['table_abc'] = table_abc
