@@ -15,7 +15,7 @@ def join_tables(dataset: PandasDataset, join_type: str = 'outer') -> PandasDatas
     common_headers = set(df_1.columns) & set(df_2.columns)
     assert len(common_headers) == 1
 
-    merged_df = pd.merge(df_1, df_2, on=common_headers.pop(), how=join_type)
+    merged_df = pd.merge(df_1, df_2, on=common_headers.pop(), how=join_type).convert_dtypes()
 
     output_dataset[output_table_name] = merged_df
     return output_dataset
