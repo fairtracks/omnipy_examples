@@ -41,6 +41,8 @@ cast_json = cast_dataset.refine(fixed_params=dict(cast_model=JsonDictOfAnyModel)
 @LinearFlowTemplate(
     # TODO: Bug running cast_json in linear flow
     #       (probably due to two argument parameters in cast_dataset)
+    # TODO: When automatic transformation of task/flow inputs/outputs are implemented,
+    #       remove to_pandas calls, here and otherwise
     import_uniprot,  # cast_json,
     transpose_dataset_of_dicts_to_lists,
     flatten_nested_json,
