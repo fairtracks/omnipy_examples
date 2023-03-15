@@ -34,7 +34,7 @@ def my_flow(numbers: ListOfNumbers) -> ListOfPositiveNumbers:
 
 
 dataset = Dataset[ListOfNumbers]()
-dataset['my_numbers'] = ListOfNumbers(["1243", -123, 3425] * 100)
+dataset['my_numbers'] = ListOfNumbers(['1243', -123, 3425] * 100)
 dataset['my_numbers_2'] = ListOfNumbers([234, -12443, 444] * 100)
 
 output = my_flow.run(dataset)

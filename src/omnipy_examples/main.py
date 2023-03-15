@@ -67,5 +67,5 @@ def main(output_dir: str = runtime.config.job.persist_data_dir_path,
     runtime.config.job.restore_outputs = restore_outputs
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app()
