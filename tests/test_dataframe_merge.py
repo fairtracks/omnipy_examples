@@ -198,11 +198,3 @@ def test_right_join_tables_on_column_some_matching(table_abc, table_dbe2):
 #     }
 
 # Further tests
-# TODO: Missing data (e.g. table_abc + table_dbe2)
-# TODO: Multiple tables
-# TODO: Multiple columns that are the same
-# TODO: Different column in A and B - don't match column names
-# TODO: Different column in A and B - match column names
-# TODO: Type of merge: Inner, Outer, Left, Right
-# TODO: Empty dataframe
-# TODO: Multiple matching rows
