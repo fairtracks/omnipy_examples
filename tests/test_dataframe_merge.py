@@ -214,3 +214,12 @@ def test_default_outer_join_tables_multiple_columns_same_name(table_abc, table_b
 #     }
 
 # Further tests
+# TODO: join_tables: When Multiple columns that have the same name -> check consistency of common columns.
+#       If identical, then merge columns.
+# TODO: join_tables: Specify left/right columns to merge on
+# TODO: join_tables: Specify left/right columns to merge on -> multiple columns with same name
+# TODO: join_tables: Specify left/right columns to merge on -> specified columns do not exist
+# TODO: join_tables: No overlapping column names in A and B
+# TODO: join_tables: Empty dataframe
+# TODO: join_tables: Multiple matching rows
+# TODO: join_tables: Multiple tables
