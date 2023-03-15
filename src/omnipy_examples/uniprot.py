@@ -39,6 +39,8 @@ cast_json = cast_dataset.refine(fixed_params=dict(cast_model=JsonDictOfAnyModel)
 
 
 @LinearFlowTemplate(
+    # TODO: Bug running cast_json in linear flow
+    #       (probably due to two argument parameters in cast_dataset)
     import_uniprot,  # cast_json,
     transpose_dataset_of_dicts_to_lists,
     flatten_nested_json,
@@ -87,18 +89,6 @@ def import_and_flatten_uniprot_with_magic() -> PandasDataset:
     uniprot_7_ds = pandas_magic(uniprot_6_ds)
     return uniprot_7_ds
 
-
-# TODO: Way to specify per flow to not preserve task outputs
-# TODO: Bug running cast_json in linear flow (probably due to two argument parameters in cast_dataset)
-# TODO: Error message when forgetting parenthesis when creating Dataset should be improved
-# TODO: Using run() inside flows should give error message
-# TODO: uniprot import is serialized as CSV instead of JSON
-# TODO: Automatic transformation into Output dataset type (remove need for to_pandas)
-# TODO: In examples, separate run files from flow/task definition
-# TODO: Make it simpler to contact REST apis
-# TODO: Increase line length max for Flake, YAPF
-
-# TODO: Next time: "omnify" pandas_magic
 
 # @TaskTemplate
 # def join_a_with_b(pandas_ds: PandasDataset,
