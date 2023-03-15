@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from omnipy.modules.pandas.models import PandasDataset
 import pandas as pd
 
@@ -23,14 +25,24 @@ def join_tables(dataset: PandasDataset,
     df_1 = dataset[table_name_1]
     df_2 = dataset[table_name_2]
 
-    common_headers = set(df_1.columns) & set(df_2.columns)
-    # assert len(common_headers) == 1
-    if len(common_headers) > 1:
-        raise ValueError(f'No common column names were found. '
-                         f'"{table_name_1}": {tuple(df_1.columns)}. '
-                         f'"{table_name_2}": {tuple(df_2.columns)}')
+    common_headers_set = set(df_1.columns) & set(df_2.columns)
+    common_headers = tuple(col for col in df_1.columns if col in common_headers_set)
 
-    merged_df = pd.merge(df_1, df_2, on=common_headers.pop(), how=join_type).convert_dtypes()
+    join_cols = []
+    if len(common_headers) > 1:
+        if allow_multiple_join_cols_if_consistent:
+            if is_pairwise_consistent_values(df_1, df_2, common_headers):
+                join_cols += list(common_headers)
+            else:
+                raise ValueError()
+        else:
+            raise ValueError(f'No common column names were found. '
+                             f'"{table_name_1}": {tuple(df_1.columns)}. '
+                             f'"{table_name_2}": {tuple(df_2.columns)}')
+    else:
+        join_cols = common_headers[0]
+
+    merged_df = pd.merge(df_1, df_2, on=join_cols, how=join_type).convert_dtypes()
 
     output_dataset[output_table_name] = merged_df
     return output_dataset

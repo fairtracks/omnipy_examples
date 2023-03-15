@@ -43,11 +43,37 @@ def table_dbe2():
 
 
 @pytest.fixture
-def table_bce():
+def table_bce_consistent():
     return DataFrame(
         [
             [345, True, 34],
             [234, False, 23],
+            [123, True, 34],
+        ],
+        columns=['B', 'C', 'E'],
+    )
+
+
+@pytest.fixture
+def table_bce_consistent_dupl_row():
+    return DataFrame(
+        [
+            [345, True, 34],
+            [234, False, 23],
+            [234, False, 45],
+            [123, True, 34],
+        ],
+        columns=['B', 'C', 'E'],
+    )
+
+
+@pytest.fixture
+def table_bce_inconsistent():
+    return DataFrame(
+        [
+            [345, False, 34],
+            [234, False, 23],
+            [234, True, 45],
             [123, True, 34],
         ],
         columns=['B', 'C', 'E'],
