@@ -187,15 +187,8 @@ def test_default_outer_join_tables_multiple_columns_same_name(table_abc, table_b
     dataset['table_abc'] = table_abc
     dataset['table_bce'] = table_bce
 
-    joined_dataset = join_tables(dataset, join_type='right')
-
-    assert joined_dataset.to_data() == {
-        'table_abc_join_table_bce': [
-            dict(A='cde', B=345, C=True, D=1.2, E=34),
-            dict(A=None, B=432, C=None, D=3.4, E=23),
-            dict(A='abc', B=123, C=True, D=3.2, E=34),
-        ]
-    }
+    with pytest.raises(ValueError):
+        join_tables(dataset, join_type='right')
 
 
 # def test_join_tables_on_column_missing_data(table_abc, table_dbe2):

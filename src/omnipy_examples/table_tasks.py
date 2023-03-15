@@ -13,7 +13,11 @@ def join_tables(dataset: PandasDataset, join_type: str = 'outer') -> PandasDatas
     df_2 = dataset[table_name_2]
 
     common_headers = set(df_1.columns) & set(df_2.columns)
-    assert len(common_headers) == 1
+    # assert len(common_headers) == 1
+    if len(common_headers) > 1:
+        raise ValueError(f'No common column names were found. '
+                         f'"{table_name_1}": {tuple(df_1.columns)}. '
+                         f'"{table_name_2}": {tuple(df_2.columns)}')
 
     merged_df = pd.merge(df_1, df_2, on=common_headers.pop(), how=join_type).convert_dtypes()
 
