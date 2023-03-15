@@ -2,7 +2,18 @@ from omnipy.modules.pandas.models import PandasDataset
 import pandas as pd
 
 
-def join_tables(dataset: PandasDataset, join_type: str = 'outer') -> PandasDataset:
+def is_pairwise_consistent_values(df_1: pd.DataFrame,
+                                  df_2: pd.DataFrame,
+                                  common_headers: Tuple[str, ...]):
+    df_1_common_cols = pd.DataFrame(df_1, columns=common_headers)
+    df_2_common_cols = pd.DataFrame(df_2, columns=common_headers)
+    return (df_1_common_cols.drop_duplicates().sort_values(by=list(common_headers)).reset_index(drop=True) == \
+        df_2_common_cols.drop_duplicates().sort_values(by=list(common_headers)).reset_index(drop=True)).all(axis=None)
+
+
+def join_tables(dataset: PandasDataset,
+                join_type: str = 'outer',
+                allow_multiple_join_cols_if_consistent: bool = False) -> PandasDataset:
     assert len(dataset) == 2
 
     output_dataset = PandasDataset()

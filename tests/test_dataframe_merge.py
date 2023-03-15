@@ -182,13 +182,59 @@ def test_right_join_tables_on_column_some_matching(table_abc, table_dbe2):
     }
 
 
-def test_default_outer_join_tables_multiple_columns_same_name(table_abc, table_bce):
+def test_default_outer_join_tables_multiple_columns_same_name_error(table_abc,
+                                                                    table_bce_consistent):
     dataset = PandasDataset()
     dataset['table_abc'] = table_abc
-    dataset['table_bce'] = table_bce
+    dataset['table_bce_consistent'] = table_bce_consistent
 
     with pytest.raises(ValueError):
-        join_tables(dataset, join_type='right')
+        join_tables(dataset)
+
+
+def test_default_outer_join_tables_multiple_columns_same_name_allow_multiple_consistent(
+        table_abc, table_bce_consistent):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_bce_consistent'] = table_bce_consistent
+
+    joined_dataset = join_tables(dataset, allow_multiple_join_cols_if_consistent=True)
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_bce_consistent': [
+            dict(A='abc', B=123, C=True, E=34),
+            dict(A='bcd', B=234, C=False, E=23),
+            dict(A='cde', B=345, C=True, E=34),
+        ]
+    }
+
+
+def test_default_outer_join_tables_multiple_columns_same_name_allow_multiple_consistent_dupl_row(
+        table_abc, table_bce_consistent_dupl_row):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_bce_consistent_dupl_row'] = table_bce_consistent_dupl_row
+
+    joined_dataset = join_tables(dataset, allow_multiple_join_cols_if_consistent=True)
+
+    assert joined_dataset.to_data() == {
+        'table_abc_join_table_bce_consistent_dupl_row': [
+            dict(A='abc', B=123, C=True, E=34),
+            dict(A='bcd', B=234, C=False, E=23),
+            dict(A='bcd', B=234, C=False, E=45),
+            dict(A='cde', B=345, C=True, E=34),
+        ]
+    }
+
+
+def test_default_outer_join_tables_multiple_columns_same_name_allow_multiple_inconsistent(
+        table_abc, table_bce_inconsistent):
+    dataset = PandasDataset()
+    dataset['table_abc'] = table_abc
+    dataset['table_bce_inconsistent'] = table_bce_inconsistent
+
+    with pytest.raises(ValueError):
+        join_tables(dataset, allow_multiple_join_cols_if_consistent=True)
 
 
 # def test_join_tables_on_column_missing_data(table_abc, table_dbe2):
