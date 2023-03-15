@@ -1,9 +1,9 @@
-from typing import Dict, List, Type, Union
+from typing import Dict, List
 
+from omnipy.data.dataset import Dataset, MultiModelDataset
+from omnipy.data.model import Model
+from omnipy.modules.pandas.models import PandasDataset
 from pydantic import BaseModel, validator
-from unifair.data.dataset import Dataset, MultiModelDataset
-from unifair.data.model import Model
-from unifair.modules.pandas.models import PandasDataset
 
 
 class LimitedInteger(BaseModel):
@@ -29,8 +29,8 @@ class ListOfIntegers(Model[List[int]]):
 # print(a)
 
 a = Dataset[Model[Dict[str, List[int]]]]()
-a['my_data'] = {'a': [3,4,123], 'b':[213,2,234]}
-a['my_data_2'] = {'a': [123,234,123], 'b':[213,234,234]}
+a['my_data'] = {'a': [3, 4, 123], 'b': [213, 2, 234]}
+a['my_data_2'] = {'a': [123, 234, 123], 'b': [213, 234, 234]}
 
 print(a.to_data())
 

@@ -1,13 +1,14 @@
 from typing import List, Union
 
-import omnipy.data
 from omnipy import runtime
 from omnipy.compute.task import TaskTemplate
+import omnipy.data
 from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from pydantic import BaseModel, PositiveInt, StrictStr
 
 print(runtime.config.job.persist_data_dir_path)
+
 #
 # int
 # str

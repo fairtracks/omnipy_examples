@@ -1,11 +1,11 @@
 from typing import List
 
-from omnipy.compute.task import TaskTemplate
+from omnipy import runtime
 from omnipy.compute.flow import LinearFlowTemplate
+from omnipy.compute.task import TaskTemplate
 from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from pydantic import PositiveInt
-from omnipy import runtime
 
 runtime.config.engine = 'local'
 
