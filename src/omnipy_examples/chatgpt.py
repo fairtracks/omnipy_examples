@@ -21,6 +21,8 @@ from reader import Feed, make_reader
 biorxiv_feed_url = 'https://connect.biorxiv.org/biorxiv_xml.php?subject=all'
 chatgpt_secret_key = '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'
 
+# TODO: Implement omnified way of managing API keys and other secrets
+
 # Models
 
 
