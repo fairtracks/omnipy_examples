@@ -4,6 +4,7 @@ from omnipy.modules.pandas.models import PandasDataset
 import pandas as pd
 
 
+# not pairwise, can be more than two columns
 def is_pairwise_consistent_values(df_1: pd.DataFrame,
                                   df_2: pd.DataFrame,
                                   common_headers: Tuple[str, ...]):
