@@ -51,6 +51,16 @@ More info on Prefect configuration will come soon...
 - Install dependencies:
   - `poetry install --with dev`
 
+- Update all dependencies:
+  - `poetry update`
+
+- Update single dependency, e.g.:
+  - `poetry update omnipy`
+
+- If a dependency is not updated to the latest version available on Pypi, you might need to clear
+  the pip cache of poetry:
+  - `poetry cache clear pypi -all`
+
 ### For mypy support in PyCharm
 
 - In PyCharm, install "Mypy" plugin (not "Mypy (Official)")
