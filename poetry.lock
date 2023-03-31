@@ -1672,14 +1672,14 @@ signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
 name = "omnipy"
-version = "0.10.2"
+version = "0.10.3"
 description = "Omnipy is a high level Python library for type-driven data wrangling and scalable workflow orchestration (under development)"
 category = "main"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "omnipy-0.10.2-py3-none-any.whl", hash = "sha256:f119cc6f5580d239af8a53c1af508779597361e8485a65b5be5fa0380380f035"},
-    {file = "omnipy-0.10.2.tar.gz", hash = "sha256:f3d3d368173108aa194a4274babc46dd11167cb536207c34cc086bdd295e0fe4"},
+    {file = "omnipy-0.10.3-py3-none-any.whl", hash = "sha256:3fa16375039d3d7fe0212caf2cb6aa037d5450ac611b900094a3e9a67062e17f"},
+    {file = "omnipy-0.10.3.tar.gz", hash = "sha256:d2f9d94a6fa6de48094c5e643a2bea21d13e3ec2b61fcabd0814ca0d494c6c20"},
 ]
 
 [package.dependencies]
@@ -3182,4 +3182,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "d93910c605858c36c702eb753a94125d50ef30cbaf265b594e82ef40b4852a39"
+content-hash = "9589ce7c73990e2eeedfc707f16c80049a5ed543dd7a9a694b19ce5dce87f64c"
