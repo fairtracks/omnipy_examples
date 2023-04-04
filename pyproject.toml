@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omnipy-examples"
-version = "0.3.2"
+version = "0.3.3"
 description = ""
 authors = ["Sveinung Gundersen <sveinugu@gmail.com>", "Jeanne Cheneby <jeanne.cheneby@mn.uio.no>"]
 readme = "README.md"
