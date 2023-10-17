@@ -122,6 +122,14 @@ async def get_biorxiv_entries_and_generate_prompts() -> PaperInfoWithPromptDatas
 
 # get_biorxiv_entries_and_generate_prompts.run()
 
+# Possible simplification?
+#
+# @TaskTemplate(async_iterate_over_data_files=True, async_run_until_complete=True, async_batch_size=1)
+# async def generate_responses(paper: PaperInfo) -> Future:
+#     API_KEY = chatgpt_secret_key
+#     API_ENDPOINT = 'https://api.openai.com/v1/completions'
+#     await async_http_post(endpoint=API_ENDPOINT, headers={'Authorization': f'Bearer {API_KEY}'})
+
 
 @TaskTemplate()
 async def generate_response(paper: PaperInfo) -> Future:
@@ -146,6 +154,10 @@ async def generate_response(paper: PaperInfo) -> Future:
             timeout=200)
         # return response.json()['choices'][0]['text']
         return response.json()
+
+
+# Possible simplification of first half of generate_responses_for_all_prompts?
+#    responses = generate_responses(papers)
 
 
 @FuncFlowTemplate
