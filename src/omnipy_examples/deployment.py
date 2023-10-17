@@ -13,3 +13,7 @@ def isajson_prefect():
 def chatgpt_prefect():
     runtime.config.engine = 'prefect'
     chatgpt()
+
+
+if __name__ == "__main__":
+    isajson_prefect.serve(name="isajson-prefect-deployment")
