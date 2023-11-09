@@ -1,0 +1,55 @@
+###
+### A complete description of a Prefect Deployment for flow 'chatgpt-prefect'
+###
+name: chatgpt
+description: null
+version: bf5dc4e26a5253da3e5aaf57091522d6
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+work_pool_name: null
+tags: []
+parameters: {}
+schedule: null
+is_schedule_active: null
+infra_overrides: {}
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: chatgpt-prefect
+manifest_path: null
+infrastructure:
+  type: docker-container
+  env:
+    EXTRA_PIP_PACKAGES: s3fs omnipy-examples
+  labels: {}
+  name: null
+  command: null
+  image: prefecthq/prefect:2.13.2-python3.10
+  image_pull_policy: null
+  image_registry: null
+  networks: []
+  network_mode: null
+  auto_remove: false
+  volumes: []
+  stream_output: true
+  memswap_limit: null
+  mem_limit: null
+  privileged: false
+  _block_document_id: 8ee8325d-bc4c-4df5-adf2-e29f4eca07ed
+  _block_document_name: prefect
+  _is_anonymous: false
+  block_type_slug: docker-container
+  _block_type_slug: docker-container
+storage: null
+path: /opt/prefect/flows
+entrypoint: src/omnipy_examples/deployment.py:chatgpt_prefect
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
+timestamp: '2023-09-29T08:52:06.621537+00:00'
+triggers: []
+enforce_parameter_schema: null
