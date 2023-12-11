@@ -19,40 +19,40 @@ installed_example_data_path = get_path_to_example_data()
 
 
 @app.command()
-def dagsim(input_dir: str = installed_example_data_path.joinpath('bif')):
+def dagsim(input_dir: str = installed_example_data_path.joinpath('bif')) -> object:
     from omnipy_examples.dagsim import import_and_convert_bif_files_to_json
-    import_and_convert_bif_files_to_json.run(input_dir)
+    return import_and_convert_bif_files_to_json.run(input_dir)
 
 
 @app.command()
-def encode():
+def encode() -> object:
     from omnipy_examples.encode import import_and_flatten_encode_data
-    import_and_flatten_encode_data.run()
+    return import_and_flatten_encode_data.run()
 
 
 @app.command()
-def gff(input_dir: str = installed_example_data_path.joinpath('gff')):
+def gff(input_dir: str = installed_example_data_path.joinpath('gff')) -> object:
     from omnipy_examples.gff import import_gff_as_pandas
-    import_gff_as_pandas.run(input_dir)
+    return import_gff_as_pandas.run(input_dir)
 
 
 @app.command()
-def isajson(input_dir: str = installed_example_data_path.joinpath('isa-json')):
+def isajson(input_dir: str = installed_example_data_path.joinpath('isa-json')) -> object:
     from omnipy_examples.isajson import convert_isa_json_to_relational_tables
-    convert_isa_json_to_relational_tables.run(input_dir)
+    return convert_isa_json_to_relational_tables.run(input_dir)
 
 
 @app.command()
-def uniprot():
+def uniprot() -> object:
     from omnipy_examples.uniprot import import_and_flatten_uniprot_with_magic
-    import_and_flatten_uniprot_with_magic.run()
+    return import_and_flatten_uniprot_with_magic.run()
 
 
 @app.command()
-def chatgpt():
+def chatgpt() -> object:
     from omnipy_examples.chatgpt import \
         get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop
-    get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
+    return get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
 
 
 @app.callback()
