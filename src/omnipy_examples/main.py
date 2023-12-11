@@ -56,7 +56,7 @@ def chatgpt():
 
 
 @app.callback()
-def main(output_dir: str = runtime.config.job.persist_data_dir_path,
+def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_dir_path,
          engine: EngineChoice = 'local',
          persist_outputs: ConfigPersistOutputsOptions = 'all',
          restore_outputs: ConfigRestoreOutputsOptions = 'disabled'):

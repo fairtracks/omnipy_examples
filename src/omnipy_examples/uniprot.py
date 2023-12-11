@@ -3,8 +3,8 @@ from omnipy.compute.task import TaskTemplate
 from omnipy.modules.general.tasks import cast_dataset
 from omnipy.modules.json.datasets import JsonDataset
 from omnipy.modules.json.flows import flatten_nested_json
-from omnipy.modules.json.models import JsonDictOfAnyModel
-from omnipy.modules.json.tasks import transpose_dataset_of_dicts_to_lists
+from omnipy.modules.json.models import JsonDictModel
+from omnipy.modules.json.tasks import transpose_dicts_of_lists_of_dicts_2_lists_of_dicts
 from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 import pandas as pd
@@ -28,14 +28,14 @@ def import_uniprot():
 # def import_and_flatten_uniprot() -> Dataset[JsonTableOfStrings]:
 #     uniprot_1_ds = import_uniprot()
 #     uniprot_2_ds = cast_dataset(uniprot_1_ds, cast_model=JsonDictOfAnyModel)
-#     uniprot_3_ds = transpose_dataset_of_dicts_to_lists(uniprot_2_ds)
+#     uniprot_3_ds = transpose_dicts_of_lists_of_dicts_2_lists_of_dicts(uniprot_2_ds)
 #     uniprot_4_ds = flatten_nested_json_to_list_of_dicts(uniprot_3_ds)
 #
 #     uniprot_5_ds = cast_dataset(uniprot_4_ds, cast_model=JsonTableOfStrings)
 #     return to_pandas(uniprot_5_ds)
 #     # return
 
-cast_json = cast_dataset.refine(fixed_params=dict(cast_model=JsonDictOfAnyModel)),
+cast_json = cast_dataset.refine(fixed_params=dict(cast_model=JsonDictModel)),
 
 
 @LinearFlowTemplate(
@@ -44,7 +44,7 @@ cast_json = cast_dataset.refine(fixed_params=dict(cast_model=JsonDictOfAnyModel)
     # TODO: When automatic transformation of task/flow inputs/outputs are implemented,
     #       remove to_pandas calls, here and otherwise
     import_uniprot,  # cast_json,
-    transpose_dataset_of_dicts_to_lists,
+    transpose_dicts_of_lists_of_dicts_2_lists_of_dicts,
     flatten_nested_json,
     convert_dataset_list_of_dicts_to_pandas)
 def import_and_flatten_uniprot() -> PandasDataset:

@@ -1,6 +1,6 @@
 from omnipy.compute.flow import LinearFlowTemplate
 from omnipy.modules.general.tasks import import_directory
-from omnipy.modules.json.datasets import JsonDictOfDictsOfAnyDataset
+from omnipy.modules.json.datasets import JsonDictOfDictsDataset
 from omnipy.modules.raw.tasks import modify_datafile_contents
 
 # from omnipy.modules.r_stat import r
@@ -38,5 +38,5 @@ def convert_to_json(contents: str, **kwargs: object):
         fixed_params=dict(modify_contents_func=convert_to_json),
     ),
 )
-def import_and_convert_bif_files_to_json(dir_path: str) -> JsonDictOfDictsOfAnyDataset:
+def import_and_convert_bif_files_to_json(dir_path: str) -> JsonDictOfDictsDataset:
     ...
