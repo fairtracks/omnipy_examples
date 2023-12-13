@@ -65,6 +65,7 @@ def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_
     runtime.config.job.persist_data_dir_path = output_dir
     runtime.config.job.persist_outputs = persist_outputs
     runtime.config.job.restore_outputs = restore_outputs
+    runtime.config.data.interactive_mode = False
 
 
 if __name__ == '__main__':
