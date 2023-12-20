@@ -31,7 +31,7 @@ kubectl port-forward svc/minio-test-minio 9000:9000 -n test-namespace
 Clean:
 ```
 helm delete my-release --namespace test-namespace
-kubectl delete namespace test-namespace
+kubectl delete namespace test-namespaceit
 ```
 
 # NIRD minIO test:
@@ -55,4 +55,18 @@ helm install minio-test ./repos/stable/minio/ --namespace namespace
 Check pods are running
 ```
 kubectl get pods -n namespace
+```
+List releases:
+```
+helm list -n namespace
+```
+
+Print a description of pod
+```
+kubectl describe pod containername -n namespace
+```
+
+Login into pod:
+```
+kubectl exec containername -n namespace -c busybox -it -- /bin/sh
 ```
