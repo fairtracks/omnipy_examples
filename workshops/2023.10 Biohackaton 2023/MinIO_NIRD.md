@@ -31,11 +31,11 @@ kubectl port-forward svc/minio-test-minio 9000:9000 -n test-namespace
 Clean:
 ```
 helm delete my-release --namespace test-namespace
-kubectl delete namespace test-namespaceit
+kubectl delete namespace test-namespace
 ```
 
 # NIRD minIO test:
-1.Install auth helper
+Install auth helper
 ```
 go install github.com/UNINETTSigma2/nird-toolkit-auth-helper@latest
 nird-toolkit-auth-helper login
