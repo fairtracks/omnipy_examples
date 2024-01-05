@@ -6,6 +6,7 @@ from omnipy.api.enums import ConfigPersistOutputsOptions, ConfigRestoreOutputsOp
 import typer
 
 app = typer.Typer()
+runtime.config.data.interactive_mode = False
 
 
 def get_path_to_example_data() -> Path:
