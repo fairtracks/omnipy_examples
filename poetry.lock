@@ -1785,13 +1785,13 @@ docs = ["myst-parser", "sphinx", "sphinx-markdown-builder (>=0.6.0)", "sphinx-rt
 
 [[package]]
 name = "omnipy"
-version = "0.13.1"
+version = "0.13.2"
 description = "Omnipy is a high level Python library for type-driven data wrangling and scalable workflow orchestration (under development)"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "omnipy-0.13.1-py3-none-any.whl", hash = "sha256:dcfd23b07ecffe7bc3b65ed5caa6d7570d293ba000a94b45f234fd46e08a6356"},
-    {file = "omnipy-0.13.1.tar.gz", hash = "sha256:e56ab757ad883ff6bbf226e55743fe1ad09942b3a1ce0a08322fb7970c3382fd"},
+    {file = "omnipy-0.13.2-py3-none-any.whl", hash = "sha256:8ad80c2dd198857c3fafe79f7b9113693077c5a7add43d8ce666898437cb60e0"},
+    {file = "omnipy-0.13.2.tar.gz", hash = "sha256:06c7a51a1e39ad0a70d656fb2c2969cd771d619b7c5b19faebc17203501cf7d3"},
 ]
 
 [package.dependencies]
@@ -3547,4 +3547,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "bb4f70fa760e004dcd74358b5714078111228c78aae980e4d64bc74bafc4c5e6"
+content-hash = "4cfe44e27f4338623c6acfd93f7022f2ee1839065cdb4188604b09095740ffdd"
