@@ -1785,19 +1785,20 @@ docs = ["myst-parser", "sphinx", "sphinx-markdown-builder (>=0.6.0)", "sphinx-rt
 
 [[package]]
 name = "omnipy"
-version = "0.13.2"
+version = "0.14.4"
 description = "Omnipy is a high level Python library for type-driven data wrangling and scalable workflow orchestration (under development)"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "omnipy-0.13.2-py3-none-any.whl", hash = "sha256:8ad80c2dd198857c3fafe79f7b9113693077c5a7add43d8ce666898437cb60e0"},
-    {file = "omnipy-0.13.2.tar.gz", hash = "sha256:06c7a51a1e39ad0a70d656fb2c2969cd771d619b7c5b19faebc17203501cf7d3"},
+    {file = "omnipy-0.14.4-py3-none-any.whl", hash = "sha256:3ea84c05a35ede5f36f4a7b725f1c3035411452aa4f26d1239de5ddffb51b9f3"},
+    {file = "omnipy-0.14.4.tar.gz", hash = "sha256:f4e1193d6e93f8ea58771183ca2daa92e3daf7554cb37d1c25820b5361245058"},
 ]
 
 [package.dependencies]
 aiostream = ">=0.4.5,<0.5.0"
 chardet = ">=5.2.0,<6.0.0"
 devtools = ">=0.12.2,<0.13.0"
+httpx = ">=0.26.0,<0.27.0"
 humanize = ">=4.9.0,<5.0.0"
 inflection = ">=0.5.1,<0.6.0"
 isort = ">=5.12.0,<6.0.0"
@@ -1809,7 +1810,6 @@ pydantic = ">=1.10.2,<2.0.0"
 pytest-asyncio = ">=0.20.2,<0.21.0"
 pytest-cases = ">=3.6.13,<4.0.0"
 requests = ">=2.25.1,<3.0.0"
-tabulate = ">=0.9.0,<0.10.0"
 typing-inspect = ">=0.8.0,<0.9.0"
 
 [[package]]
@@ -2995,20 +2995,6 @@ anyio = ">=3.4.0,<5"
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
 
 [[package]]
-name = "tabulate"
-version = "0.9.0"
-description = "Pretty-print tabular data"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f"},
-    {file = "tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c"},
-]
-
-[package.extras]
-widechars = ["wcwidth"]
-
-[[package]]
 name = "text-unidecode"
 version = "1.3"
 description = "The most basic Text::Unidecode port"
@@ -3547,4 +3533,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "4cfe44e27f4338623c6acfd93f7022f2ee1839065cdb4188604b09095740ffdd"
+content-hash = "f89a0dab48b9a7ab6300bfce59cc4cbc6c9e70be4dffbd6a56f502d13e458d65"
