@@ -1,4 +1,10 @@
 FROM prefecthq/prefect:2-latest
 
 RUN pip install omnipy_examples
-RUN sudo locale-gen de_DE.UTF-8 && sudo locale-gen en_US.UTF-8 && sudo update-locale LANG=en_US.UTF-8
+RUN set -eux; \
+	apt-get install -y locales
+RUN set -eux; \
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen; \
+    echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen; \
+    locale-gen; \
+    update-locale en_us.UTF-8
