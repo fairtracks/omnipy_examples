@@ -15,5 +15,8 @@ def chatgpt_prefect():
     chatgpt()
 
 
-if __name__ == "__main__":
-    isajson_prefect.serve(name="isajson-prefect-deployment")
+# isajson_prefect.deploy(
+#     'isajson', work_pool_name='kubernetes-agent', image='fairtracks/omnipy-examples:latest')
+#
+# if __name__ == "__main__":
+#     isajson_prefect.serve(name="isajson-prefect-deployment")
