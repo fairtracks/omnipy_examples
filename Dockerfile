@@ -2,7 +2,11 @@ FROM prefecthq/prefect:2-latest
 
 RUN pip install omnipy_examples
 RUN set -eux; \
-	apt-get install -y locales
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+            locales; \
+            apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	        rm -rf /var/lib/apt/lists/*;
 RUN set -eux; \
     echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen; \
     echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen; \
