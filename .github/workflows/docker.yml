@@ -26,6 +26,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags:
-          - fairtracks/omnipy-examples:${{  github.ref_name }}
-          - fairtracks/omnipy-examples:latest
+          tags: fairtracks/omnipy-examples:${{  github.ref_name }}, fairtracks/omnipy-examples:latest
