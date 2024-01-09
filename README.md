@@ -29,10 +29,17 @@ for f in $(ls data/2023_02_03-12_51_51/*.tar.gz); do mkdir ${f%.tar.gz}; tar xfz
 
 Omnipy is integrated with the powerful [Prefect](https://prefect.io) data flow orchestration library.
 
-- To run an example using the `prefect` engine, e.g.:
+- To run an local example using the `prefect` engine, e.g.:
   - `omnipy-examples --engine prefect isajson`
 - After completion of some runs, you can check the flow logs and orchestration options in the Prefect UI:
-  - `prefect orion start`
+  - `prefect server start`
+
+To set up a kubernetes-based deployment on our NIRD test setup, run:
+
+- `prefect config set PREFECT_API_URL=https://prefect.fairtracks.sigma2.no/api`
+- `prefect deploy -n isajson_prefect`
+
+The configuration of this job is found in the file `prefect.yaml`. 
 
 More info on Prefect configuration will come soon...
 
