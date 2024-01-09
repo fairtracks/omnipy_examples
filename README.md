@@ -34,10 +34,10 @@ Omnipy is integrated with the powerful [Prefect](https://prefect.io) data flow o
 - After completion of some runs, you can check the flow logs and orchestration options in the Prefect UI:
   - `prefect server start`
 
-To set up a kubernetes-based deployment on our NIRD test setup, run:
+To set up a kubernetes-based deployment on our NIRD test setup, run e.g.:
 
 - `prefect config set PREFECT_API_URL=https://prefect.fairtracks.sigma2.no/api`
-- `prefect deploy -n isajson_prefect`
+- `prefect deploy -n isajson`
 
 The configuration of this job is found in the file `prefect.yaml`. 
 

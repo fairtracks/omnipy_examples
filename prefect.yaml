@@ -19,11 +19,70 @@ pull:
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
-- name: isajson_prefect
+- name: dagsim
   version: null
   tags: []
   description: null
+  entrypoint: deployment.py:dagsim_prefect
+  parameters: {}
+  work_pool:
+    name: kubernetes-agent
+    work_queue_name: null
+    job_variables: {}
+  schedule: null
+
+- name: encode
+  version: null
+  tags: []
+  description: null
+  entrypoint: deployment.py:encode_prefect
+  parameters: {}
+  work_pool:
+    name: kubernetes-agent
+    work_queue_name: null
+    job_variables: {}
+  schedule: null
+
+- name: gff
+  version: null
+  tags: []
+  description: null
+  entrypoint: deployment.py:gff_prefect
+  parameters: {}
+  work_pool:
+    name: kubernetes-agent
+    work_queue_name: null
+    job_variables: {}
+  schedule: null
+
+- name: isajson
+  tags: []
+  description: null
   entrypoint: deployment.py:isajson_prefect
+  parameters: {}
+  work_pool:
+    name: kubernetes-agent
+    work_queue_name: null
+    job_variables: {}
+  schedule: null
+
+- name: uniprot
+  version: null
+  tags: []
+  description: null
+  entrypoint: deployment.py:uniprot_prefect
+  parameters: {}
+  work_pool:
+    name: kubernetes-agent
+    work_queue_name: null
+    job_variables: {}
+  schedule: null
+
+- name: chatgpt
+  version: null
+  tags: []
+  description: null
+  entrypoint: deployment.py:chatgpt_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent

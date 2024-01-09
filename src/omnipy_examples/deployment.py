@@ -1,12 +1,36 @@
 from omnipy import runtime
-from omnipy_examples.main import chatgpt, isajson
+from omnipy_examples.main import chatgpt, dagsim, encode, gff, isajson, uniprot
 from prefect import flow as prefect_flow
+
+
+@prefect_flow
+def dagsim_prefect():
+    runtime.config.engine = 'prefect'
+    dagsim()
+
+
+@prefect_flow
+def encode_prefect():
+    runtime.config.engine = 'prefect'
+    encode()
+
+
+@prefect_flow
+def gff_prefect():
+    runtime.config.engine = 'prefect'
+    gff()
 
 
 @prefect_flow
 def isajson_prefect():
     runtime.config.engine = 'prefect'
     isajson()
+
+
+@prefect_flow
+def uniprot_prefect():
+    runtime.config.engine = 'prefect'
+    uniprot()
 
 
 @prefect_flow
