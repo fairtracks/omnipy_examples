@@ -12,7 +12,7 @@ import requests
 
 
 @TaskTemplate
-def import_uniprot():
+def import_uniprot() -> JsonDataset:
     HEADERS = {'accept': 'application/json'}
     api_url = 'https://rest.uniprot.org/uniprotkb/search?query=human%20cdc7'
     response = requests.get(api_url, headers=HEADERS)
