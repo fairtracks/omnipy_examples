@@ -11,5 +11,5 @@ RUN set -eux; \
     echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen; \
     echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen; \
     locale-gen; \
-    update-locale en_us.UTF-8; \
+    update-locale en_us.UTF-8;
 RUN ln -sf /usr/local/lib/python3.10/site-packages/omnipy_examples/deployment.py /opt/prefect/deployment.py
