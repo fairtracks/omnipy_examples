@@ -1,9 +1,9 @@
-name: Python package
+name: Format and lint
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  format_and_lint:
 
     runs-on: ubuntu-latest
     strategy:
