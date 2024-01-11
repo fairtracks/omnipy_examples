@@ -7,10 +7,10 @@ name: omnipy_examples
 prefect-version: 2.14.12
 
 # build section allows you to manage and build docker images
-build: null
+build:
 
 # push section allows you to manage if and how this project is uploaded to remote locations
-push: null
+push:
 
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
@@ -20,72 +20,72 @@ pull:
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
 - name: dagsim
-  version: null
+  version:
   tags: []
-  description: null
-  entrypoint: deployment.py:dagsim_prefect
+  description:
+  entrypoint: src/omnipy_examples/deployment.py:dagsim_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent
-    work_queue_name: null
+    work_queue_name:
     job_variables: {}
-  schedule: null
+  schedule:
 
 - name: encode
-  version: null
+  version:
   tags: []
-  description: null
-  entrypoint: deployment.py:encode_prefect
+  description:
+  entrypoint: src/omnipy_examples/deployment.py:encode_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent
-    work_queue_name: null
+    work_queue_name:
     job_variables: {}
-  schedule: null
+  schedule:
 
 - name: gff
-  version: null
+  version:
   tags: []
-  description: null
-  entrypoint: deployment.py:gff_prefect
+  description:
+  entrypoint: src/omnipy_examples/deployment.py:gff_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent
-    work_queue_name: null
+    work_queue_name:
     job_variables: {}
-  schedule: null
+  schedule:
 
 - name: isajson
   tags: []
-  description: null
-  entrypoint: deployment.py:isajson_prefect
+  description:
+  entrypoint: src/omnipy_examples/deployment.py:isajson_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent
-    work_queue_name: null
+    work_queue_name:
     job_variables: {}
-  schedule: null
+  schedule:
 
 - name: uniprot
-  version: null
+  version:
   tags: []
-  description: null
-  entrypoint: deployment.py:uniprot_prefect
+  description:
+  entrypoint: src/omnipy_examples/deployment.py:uniprot_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent
-    work_queue_name: null
+    work_queue_name:
     job_variables: {}
-  schedule: null
+  schedule:
 
 - name: chatgpt
-  version: null
+  version:
   tags: []
-  description: null
-  entrypoint: deployment.py:chatgpt_prefect
+  description:
+  entrypoint: src/omnipy_examples/deployment.py:chatgpt_prefect
   parameters: {}
   work_pool:
     name: kubernetes-agent
-    work_queue_name: null
+    work_queue_name:
     job_variables: {}
-  schedule: null
+  schedule:
