@@ -36,8 +36,6 @@ def chatgpt_prefect():
     chatgpt()
 
 
-uniprot_prefect()
-
 # isajson_prefect.deploy(
 #     'isajson', work_pool_name='kubernetes-agent', image='fairtracks/omnipy-examples:latest')
 #
