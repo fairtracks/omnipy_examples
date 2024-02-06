@@ -55,19 +55,19 @@ def import_and_flatten_uniprot() -> PandasDataset:
 def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     #  Get synonym table and clean foreign key
     df_synonym = pandas['results.genes.synonyms']
-    df_synonym['_omnipy_ref'] = df_synonym['_omnipy_ref'].str.strip('results.genes.')
+    # df_synonym['_omnipy_ref'] = df_synonym['_omnipy_ref'].str.strip('results.genes.')
 
     # Get gene table and join with synonym table to get gene foreign id
     df_gene = pandas['results.genes']
     df_merge_1 = pd.merge(
         df_synonym, df_gene, left_on='_omnipy_ref', right_on='_omnipy_id', how='right')
     df_merge_1 = df_merge_1.loc[:, ['value', '_omnipy_ref_y']]
-    df_merge_1.columns = ['synomym', '_omnipy_ref']
-    df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
+    df_merge_1.columns = ['synonym', '_omnipy_ref']
+    # df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
 
     # Get keywords table and clean foreign key
     df_keywords = pandas['results.keywords']
-    df_keywords['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
+    # df_keywords['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
     df_keywords = df_keywords.loc[:, ['_omnipy_ref', 'category', 'name']]
 
     # Merge keywords with synonym

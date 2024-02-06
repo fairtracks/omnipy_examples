@@ -1785,13 +1785,13 @@ docs = ["myst-parser", "sphinx", "sphinx-markdown-builder (>=0.6.0)", "sphinx-rt
 
 [[package]]
 name = "omnipy"
-version = "0.14.7"
+version = "0.15.1"
 description = "Omnipy is a high level Python library for type-driven data wrangling and scalable workflow orchestration (under development)"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "omnipy-0.14.7-py3-none-any.whl", hash = "sha256:1bc79c1f722822ff964456d7805b12c010b4fa9dbff9e571f48e830fcf43ad1e"},
-    {file = "omnipy-0.14.7.tar.gz", hash = "sha256:f6c4878683107d389ca7d3dc6e9619a4c99ecab35fd9966f081671fd720243de"},
+    {file = "omnipy-0.15.1-py3-none-any.whl", hash = "sha256:3262800d0c2b59677ece5f669be8c6306442de4c2a2e25bfefef5589e759f8a2"},
+    {file = "omnipy-0.15.1.tar.gz", hash = "sha256:1ebc57448ed58d4a7a40566d8584d67b0a7851b3352c70b5258a72079228f552"},
 ]
 
 [package.dependencies]
@@ -1803,7 +1803,7 @@ humanize = ">=4.9.0,<5.0.0"
 inflection = ">=0.5.1,<0.6.0"
 isort = ">=5.12.0,<6.0.0"
 objsize = ">=0.7.0,<0.8.0"
-pandas = ">=1.5.3"
+pandas = "<2.2"
 pathspec = "0.12.1"
 prefect = ">=2.7.3,<3.0.0"
 pydantic = ">=1.10.2,<2.0.0"
@@ -3533,4 +3533,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "579cc4853ab1dfa37c6a164bbe365dcad40fb9db28934326331e1aebe077110c"
+content-hash = "6db5bc73dc68ab43a10b302d2f6bec87b7841415901dd5c295546e45012002fa"

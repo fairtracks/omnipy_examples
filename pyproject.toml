@@ -12,7 +12,7 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
 typing-inspect = "^0.8.0"
-omnipy = "^0.14.7"
+omnipy = "^0.15.1"
 typer = "^0.9.0"
 omnipy-example-data = "^0.1.0"
 reader = "^3.4"
