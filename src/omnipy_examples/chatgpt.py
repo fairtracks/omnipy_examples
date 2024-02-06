@@ -160,7 +160,7 @@ async def generate_response(paper: PaperInfo) -> Future:
 #    responses = generate_responses(papers)
 
 
-@FuncFlowTemplate
+@FuncFlowTemplate()
 def generate_responses_for_all_prompts(papers: PaperInfoWithPromptDataset):
     loop = asyncio.new_event_loop()
     tasks = [generate_response(paper) for paper in papers.values()]
