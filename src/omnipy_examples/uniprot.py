@@ -85,10 +85,82 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     return out_dataset
 
 
+@TaskTemplate
+def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
+    df_merge_1 = pd.merge(
+        dataset['results.genes.geneName'],
+        dataset['results.genes'],
+        left_on='_omnipy_ref',
+        right_on='_omnipy_id',
+        how='right',
+        suffixes=('.results.genes.geneName', None),
+    )
+
+    df_merge_2 = pd.merge(
+        dataset['results.genes.synonyms'],
+        df_merge_1,
+        left_on='_omnipy_ref',
+        right_on='_omnipy_id',
+        how='right',
+        suffixes=('.results.genes.synonyms', None),
+    )
+
+    df_merge_3 = pd.merge(
+        df_merge_2,
+        dataset['results.keywords'],
+        left_on='_omnipy_ref',
+        right_on='_omnipy_ref',
+        how='right',
+        suffixes=(None, '.results.keywords'))
+
+    df_merge_4 = pd.merge(
+        df_merge_3,
+        dataset['results'],
+        left_on='_omnipy_ref',
+        right_on='_omnipy_id',
+        how='right',
+        suffixes=('.results.genes', None),
+    ).loc[:,
+          [
+              'primaryAccession',
+              'uniProtkbId',
+              'value',
+              'value.results.genes.synonyms',
+              'category',
+              'name',
+          ]]
+    df_merge_final = df_merge_4.rename(columns={
+        'value': 'geneName',
+        'value.results.genes.synonyms': 'synonym',
+    })
+
+    out_dataset = PandasDataset()
+    out_dataset['my_table'] = df_merge_final
+
+    return out_dataset
+
+
+# @TaskTemplate
+# def pandas_magic_unimplemented(dataset: PandasDataset) -> PandasDataset:
+#     out_dataset = PandasDataset()
+#     out_dataset['my_table'] = extract_mapped_table_from_flattened_dataset(
+#         dataset,
+#         map=dict(
+#             primaryAccession='results.primaryAccession',
+#             uniProtkbId='results.uniProtkbId',
+#             geneName='results.genes.geneName.value',
+#             synonym='results.genes.synonyms.value',
+#             category='results.keywords.category',
+#             name='results.keywords.name',
+#         ))
+#
+#     return out_dataset
+
+
 @FuncFlowTemplate
 def import_and_flatten_uniprot_with_magic() -> PandasDataset:
     uniprot_6_ds = import_and_flatten_uniprot()
-    uniprot_7_ds = pandas_magic(uniprot_6_ds)
+    uniprot_7_ds = pandas_magic_alternative(uniprot_6_ds)
     return uniprot_7_ds
 
 
