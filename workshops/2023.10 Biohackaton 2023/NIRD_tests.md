@@ -8,4 +8,4 @@ the worker.
 3. Deploy the worker ``helm install prefect-worker-test ./charts/prefect-worker/ --namespace fairtracks-ns10022k``
 3. Export the api url  ``export PREFECT_API_URL=http://prefect.fairtracks.sigma2.no/api``
 4. Optional? Setup ``prefect config set PREFECT_API_URL=http://prefect.fairtracks.sigma2.no/api``
-5. Run the python file or the omnipy example, e.g. ``omnipy-examples --engine prefect isajson``
+5.  Run a deployment ``prefect deploy``, select "Enter a flow entrypoint manually"
