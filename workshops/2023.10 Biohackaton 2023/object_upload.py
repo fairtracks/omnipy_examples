@@ -14,6 +14,6 @@ def upload_to_bucket(file_path):
     bucket.upload_file(file_path, file_path.split('/')[-1])
 
 
-if __name__ == "__main__":
-    file_path = "./testfile.txt"
+if __name__ == '__main__':
+    file_path = './testfile.txt'
     upload_to_bucket(file_path)

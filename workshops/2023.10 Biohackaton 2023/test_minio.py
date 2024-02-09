@@ -10,7 +10,7 @@ s3_client = session.client(
 buckets = s3_client.list_buckets()
 for bucket in buckets['Buckets']:
     bucket_name = bucket['Name']
-    print(f"Bucket: {bucket_name}")
+    print(f'Bucket: {bucket_name}')
     print(s3_client.list_objects(Bucket=bucket_name).get('Contents', []))
     for obj in s3_client.list_objects(Bucket=bucket_name).get('Contents', []):
         print(obj['Key'])
