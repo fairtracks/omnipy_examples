@@ -70,3 +70,8 @@ Login into pod:
 ```
 kubectl exec containername -n namespace -c busybox -it -- /bin/sh
 ```
+
+Check authorisation for specific service users, e.g.:
+```
+kubectl auth can-i --as=system:serviceaccount:fairtracks-ns10022k:prefect-worker watch events -n fairtracks-ns10022k
+```

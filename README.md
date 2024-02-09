@@ -59,7 +59,7 @@ More info on Prefect configuration will come soon...
 
 - If a dependency is not updated to the latest version available on Pypi, you might need to clear
   the pip cache of poetry:
-  - `poetry cache clear pypi -all`
+  - `poetry cache clear pypi --all`
 
 ### For mypy support in PyCharm
 
