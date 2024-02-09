@@ -9,7 +9,7 @@ def list_buckets():
         service_name='s3',
         aws_access_key_id='accesskeyexample123',
         aws_secret_access_key='secretkeyexample123',
-        endpoint_url='https://omnipy.fairtracks.sigma2.no',
+        endpoint_url='https://minio-test2.fairtracks.sigma2.no',
         use_ssl=True)
 
     response = s3.list_buckets()

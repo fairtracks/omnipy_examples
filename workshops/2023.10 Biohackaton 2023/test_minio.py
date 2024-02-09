@@ -4,7 +4,7 @@ session = boto3.session.Session(profile_name='minio')
 
 s3_client = session.client(
     service_name='s3',
-    endpoint_url='https://omnipy.fairtracks.sigma2.no',
+    endpoint_url='https://minio-test2.fairtracks.sigma2.no',
 )
 
 buckets = s3_client.list_buckets()
