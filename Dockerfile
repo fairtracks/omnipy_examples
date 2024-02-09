@@ -1,4 +1,4 @@
-FROM prefecthq/prefect:2-latest
+FROM prefecthq/prefect:2.13-python3.10-kubernetes
 
 RUN pip install omnipy_examples
 RUN set -eux; \
