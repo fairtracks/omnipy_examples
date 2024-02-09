@@ -12,12 +12,13 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
 typing-inspect = "^0.8.0"
-omnipy = "^0.15.1"
+omnipy = "0.15.3"
 typer = "^0.9.0"
 omnipy-example-data = "^0.1.0"
 reader = "^3.4"
 github3-py = "^3.2.0"
-boto3 = "1.28.75"
+pandas = "1.5.3"
+pytest = "<8"
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.32.0"
