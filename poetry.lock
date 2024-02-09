@@ -1482,13 +1482,13 @@ docs = ["myst-parser", "sphinx", "sphinx-markdown-builder (>=0.6.0)", "sphinx-rt
 
 [[package]]
 name = "omnipy"
-version = "0.15.5"
+version = "0.15.6"
 description = "Omnipy is a high level Python library for type-driven data wrangling and scalable workflow orchestration (under development)"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "omnipy-0.15.5-py3-none-any.whl", hash = "sha256:7b9d378c757a71d711c28471f24026ca76a3a74c3d88877bd4200c295ac0d509"},
-    {file = "omnipy-0.15.5.tar.gz", hash = "sha256:faa8fe4cf86a8a91beb7bb4fda4f02f19b3d930fadea4eeecbbb6868e191580d"},
+    {file = "omnipy-0.15.6-py3-none-any.whl", hash = "sha256:67d9166a88e48baf45e1349df1f15ad8a9884879464a95c73a3842b67cd548f4"},
+    {file = "omnipy-0.15.6.tar.gz", hash = "sha256:a2ff78f29f367294487a8016321193f158f136a1e947e79dfa7485582bf401ca"},
 ]
 
 [package.dependencies]
@@ -1503,7 +1503,7 @@ objsize = ">=0.7.0,<0.8.0"
 pandas = "<2.2"
 pathspec = "0.12.1"
 prefect = "<2.14"
-pydantic = ">=1.10.2,<2.0.0"
+pydantic = {version = "<2", extras = ["email"]}
 pytest-asyncio = ">=0.20.2,<0.21.0"
 pytest-cases = ">=3.6.13,<4.0.0"
 requests = ">=2.25.1,<3.0.0"
@@ -2970,4 +2970,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "99dea19722652de007bbce19e30680cbda08df92b6e171d2ee35163771bcf6ee"
+content-hash = "e1343a96b0c1083328332a3cea45ddbc824fa0a200287d7203b8dce213ef53c3"
