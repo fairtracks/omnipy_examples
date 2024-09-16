@@ -24,10 +24,6 @@ Check logs:
 ```
 kubectl logs -f pod/minio-test-minio-5b9895fdcd-wjnvh -n test-namespace
 ```
-Access minio UI:
-```
-kubectl port-forward svc/minio-test-minio 9000:9000 -n test-namespace
-```
 Clean:
 ```
 helm delete my-release --namespace test-namespace
