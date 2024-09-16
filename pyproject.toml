@@ -12,18 +12,18 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 typing-inspect = "^0.8.0"
-typer = "^0.9.0"
 omnipy-example-data = "^0.1.0"
 reader = "^3.4"
 github3-py = "^3.2.0"
 #pandas = "1.5.3"
 pytest = "<8"
-omnipy = "0.16.0"
+omnipy = "0.16.1"
 #omnipy = { git = "https://github.com/fairtracks/omnipy.git", branch = "release_0.16.0" }
 boto3 = "^1.35.6"
 prefect-aws = "<0.5"
 griffe = "<1"
 numpy = "<2"
+prefect = ">2.20"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
