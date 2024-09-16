@@ -1,5 +1,5 @@
 from omnipy import runtime
-from omnipy_examples.main import chatgpt, dagsim, encode, gff, isajson, uniprot
+from omnipy_examples.main import bed, chatgpt, dagsim, encode, gff, isajson, uniprot
 from prefect import flow as prefect_flow
 
 runtime.config.engine = 'prefect'
@@ -34,6 +34,11 @@ def uniprot_prefect():
 @prefect_flow
 def chatgpt_prefect():
     chatgpt()
+
+
+@prefect_flow
+def bed_prefect():
+    bed()
 
 
 # isajson_prefect.deploy(

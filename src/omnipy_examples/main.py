@@ -19,6 +19,18 @@ installed_example_data_path = get_path_to_example_data()
 
 
 @app.command()
+def bed(
+    owner: str = 'sunyumail93',
+    repo: str = 'Bed12Processing',
+    path: str = 'data',
+    file_suffix: str = 'bed12',
+) -> PandasDataset:
+    from omnipy_examples.bed import import_bed_files_to_pandas
+    return import_bed_files_to_pandas.run(
+        owner=owner, repo=repo, path=path, file_suffix=file_suffix)
+
+
+@app.command()
 def dagsim(input_dir: str = installed_example_data_path.joinpath('bif')) -> object:
     from omnipy_examples.dagsim import import_and_convert_bif_files_to_json
     return import_and_convert_bif_files_to_json.run(input_dir)
