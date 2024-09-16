@@ -76,4 +76,17 @@ not have as many options. I am not fully happy with my config, but I at least li
 
 - In PyCharm -> File Watchers:
   - Click arrow down icon
-  - Select `watchers.xml`
+  - Select `pycharm-file-watchers.xml`
+
+
+```
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Finished running "task-transpose-dicts-2-lists-annoying-wombat"! [omnipy.log.registry.RunStateRegistry]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Writing dataset as a gzipped tarpack to "/Users/sveinugu/PycharmProjects/omnipy_examples/outputs/2024_08_27-15_39_30/02_task_transpose_dicts_2_lists.tar.gz" [omnipy.compute.task.TaskWithMixins]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Finished running "func-flow-transpose-dicts-of-lists-of-dicts-2-lists-of-dicts-banana-antelope"! [omnipy.log.registry.RunStateRegistry]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Writing dataset as a gzipped tarpack to "/Users/sveinugu/PycharmProjects/omnipy_examples/outputs/2024_08_27-15_39_30/03_func_flow_transpose_dicts_of_lists_of_dicts_2_lists_of_dicts.tar.gz" [omnipy.compute.flow.FuncFlowWithMixins]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Initialized "func-flow-flatten-nested-json-incredible-bobcat" [omnipy.log.registry.RunStateRegistry]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Started running "func-flow-flatten-nested-json-incredible-bobcat"... [omnipy.log.registry.RunStateRegistry]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Initialized "task-flatten-outer-level-of-all-data-files-axiomatic-ape" [omnipy.log.registry.RunStateRegistry]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Started running "task-flatten-outer-level-of-all-data-files-axiomatic-ape"... [omnipy.log.registry.RunStateRegistry]
+[OMNIPY]  Tue Aug 27 15:39:30 2024 - INFO: Finished running "task-flatten-outer-level-of-all-data-files-axiomatic-ape"! [omnipy.log.registry.RunStateRegistry]
+```
