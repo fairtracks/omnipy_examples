@@ -1,6 +1,7 @@
-FROM prefecthq/prefect:2.13-python3.10-kubernetes
+FROM prefecthq/prefect:2.20.7-python3.12-kubernetes
 
 RUN pip install omnipy_examples
+RUN pip uninstall omnipy omnipy_examples
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
