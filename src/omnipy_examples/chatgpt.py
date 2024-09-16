@@ -57,7 +57,7 @@ class PaperInfoWithPromptAndInterpretationDataset(
 def get_latest_entries(feed_url: str, max_entries_per_run: int) -> PaperInfoDataset:
     dataset = PaperInfoDataset()
 
-    db_path = Path(runtime.config.root_log.file_log_dir_path).parent.joinpath('db.sqlite')
+    db_path = Path(runtime.config.root_log.file_log_path).parent.parent.joinpath('db.sqlite')
     reader = make_reader(str(db_path))
     reader.add_feed(feed_url, exist_ok=True)
     reader.update_feeds()

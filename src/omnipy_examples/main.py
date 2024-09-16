@@ -1,12 +1,11 @@
 import importlib
 from pathlib import Path
 
-from omnipy import runtime
+from omnipy import PandasDataset, runtime
 from omnipy.api.enums import ConfigPersistOutputsOptions, ConfigRestoreOutputsOptions, EngineChoice
 import typer
 
 app = typer.Typer()
-runtime.config.data.interactive_mode = False
 
 
 def get_path_to_example_data() -> Path:
@@ -66,7 +65,7 @@ def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_
     runtime.config.job.persist_data_dir_path = output_dir
     runtime.config.job.persist_outputs = persist_outputs
     runtime.config.job.restore_outputs = restore_outputs
-    runtime.config.data.interactive_mode = False
+    runtime.config.data.interactive_mode = True
 
 
 if __name__ == '__main__':

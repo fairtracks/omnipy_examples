@@ -1,10 +1,8 @@
 from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
-from omnipy.modules.general.tasks import cast_dataset
 from omnipy.modules.json.datasets import JsonDataset
-from omnipy.modules.json.flows import flatten_nested_json
-from omnipy.modules.json.models import JsonDictModel
-from omnipy.modules.json.tasks import transpose_dicts_of_lists_of_dicts_2_lists_of_dicts
+from omnipy.modules.json.flows import (flatten_nested_json,
+                                       transpose_dicts_of_lists_of_dicts_2_lists_of_dicts)
 from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 import pandas as pd
