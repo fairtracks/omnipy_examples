@@ -172,6 +172,10 @@ def generate_responses_for_all_prompts(papers: PaperInfoWithPromptDataset):
 
     dataset = PaperInfoWithPromptAndInterpretationDataset()
     for key, paper in papers.items():
+        if 'error' in response_dict[key]:
+            print(f"Error for {paper.id}: {response_dict[key]['error']['code']}"
+                  f" - {response_dict[key]['error']['message']}")
+            continue
         dataset[key] = PaperInfoWithPromptAndInterpretation(
             id=paper.id,
             title=paper.title,
