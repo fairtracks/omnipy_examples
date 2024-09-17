@@ -4,7 +4,7 @@
 
 # Generic metadata about this project
 name: omnipy_examples
-prefect-version: 2.13.8
+prefect-version: 2.20.7
 
 # build section allows you to manage and build docker images
 build:
@@ -14,16 +14,16 @@ push:
 
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
-- prefect.deployments.steps.set_working_directory:
-    directory: /opt/prefect
+- prefect.deployments.steps.git_clone:
+    id: clone-omnipy
+    repository: https://github.com/fairtracks/omnipy.git
 
-- prefect.deployments.steps.git_clone_project:
-    id: clone-step
+- prefect.deployments.steps.git_clone:
+    id: clone-omnipy-examples
     repository: https://github.com/fairtracks/omnipy_examples.git
-    branch: gff_update_tmp
 
-- prefect.projects.steps.pip_install_requirements:
-    directory: "{{ clone-step.directory }}"
+- prefect.deployments.steps.pip_install_requirements:
+    directory: "{{ clone-omnipy-examples.directory }}"
     requirements_file: requirements.txt
     stream_output: true
 
@@ -100,6 +100,7 @@ deployments:
     work_queue_name:
     job_variables: {}
   schedule:
+
 - name: bed
   version:
   tags: []
