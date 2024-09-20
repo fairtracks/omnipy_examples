@@ -24,7 +24,7 @@ pull:
     requirements_file: requirements.txt
     stream_output: True
 - prefect.deployments.steps.set_working_directory:
-    directory: src
+    directory: "/opt/prefect/{{ clone-omnipy-examples.directory }}/src"
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
