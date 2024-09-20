@@ -19,11 +19,11 @@ pull:
     id: clone-omnipy-examples
     repository: https://github.com/fairtracks/omnipy_examples.git
 - prefect.deployments.steps.pip_install_requirements:
-    directory: { { clone-clone-omnipy-examples.directory } }
+    directory: "{{ clone-omnipy-examples.directory }}"
     requirements_file: requirements.txt
     stream_output: False
 - prefect.deployments.steps.set_working_directory:
-    directory: { { clone-omnipy-examples.directory } }
+    directory: "{{ clone-omnipy-examples.directory }}"
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
