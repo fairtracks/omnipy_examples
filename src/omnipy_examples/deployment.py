@@ -1,4 +1,9 @@
+import os
+
 from omnipy import runtime
+
+print(os.path.abspath(os.getcwd()))
+
 from omnipy_examples.main import bed, chatgpt, dagsim, encode, gff, isajson, uniprot
 from prefect import flow as prefect_flow
 
