@@ -55,7 +55,6 @@ def fetch_bed_dataset(url_list: StrDataset) -> BedDataset:
 
     bed_dataset = BedDataset()
     bed_dataset |= bed_raw_dataset
-    bed_dataset[0] += bed_raw_dataset[0]
     return bed_dataset
 
 
