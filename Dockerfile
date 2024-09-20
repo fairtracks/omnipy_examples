@@ -1,7 +1,7 @@
-ARG PREFECT_VERSION=2.20.8
-ARG PYTHON_VERSION=3.12
+ARG _PREFECT_VERSION=2.20.8
+ARG _PYTHON_VERSION=3.12
 
-FROM prefecthq/prefect:$PREFECT_VERSION-python$PYTHON_VERSION-kubernetes
+FROM prefecthq/prefect:$_PREFECT_VERSION-python$_PYTHON_VERSION-kubernetes
 
 RUN pip install -r https://raw.githubusercontent.com/fairtracks/omnipy_examples/master/requirements.txt
 RUN set -eux; \
@@ -15,4 +15,4 @@ RUN set -eux; \
     echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen; \
     locale-gen; \
     update-locale en_us.UTF-8;
-RUN ln -sf /usr/local/lib/python$PYTHON_VERSION/site-packages /opt/prefect/src
+RUN ln -sf /usr/local/lib/python$_PYTHON_VERSION/site-packages /opt/prefect/src
