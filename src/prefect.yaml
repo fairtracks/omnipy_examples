@@ -23,8 +23,8 @@ pull:
     directory: "{{ clone-omnipy-examples.directory }}"
     requirements_file: requirements.txt
     stream_output: True
-#- prefect.deployments.steps.set_working_directory:
-#    directory: "{{ clone-omnipy-examples.directory }}"
+- prefect.deployments.steps.set_working_directory:
+    directory: "{{ clone-omnipy-examples.directory }}/src"
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
@@ -32,7 +32,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:dagsim_prefect
+  entrypoint: omnipy_examples/deployment.py:dagsim_prefect
   parameters: {}
   work_pool:
     name: omnipy
@@ -44,7 +44,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:encode_prefect
+  entrypoint: omnipy_examples/deployment.py:encode_prefect
   parameters: {}
   work_pool:
     name: omnipy
@@ -56,7 +56,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:gff_prefect
+  entrypoint: omnipy_examples/deployment.py:gff_prefect
   parameters: {}
   work_pool:
     name: omnipy
@@ -68,7 +68,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:isajson_prefect
+  entrypoint: omnipy_examples/deployment.py:isajson_prefect
   parameters: {}
   work_pool:
     name: omnipy
@@ -80,7 +80,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:uniprot_prefect
+  entrypoint: omnipy_examples/deployment.py:uniprot_prefect
   parameters: {}
   work_pool:
     name: omnipy
@@ -92,7 +92,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:chatgpt_prefect
+  entrypoint: omnipy_examples/deployment.py:chatgpt_prefect
   parameters: {}
   work_pool:
     name: omnipy
@@ -104,7 +104,7 @@ deployments:
   version:
   tags: []
   description:
-  entrypoint: src/omnipy_examples/deployment.py:bed_prefect
+  entrypoint: omnipy_examples/deployment.py:bed_prefect
   parameters: {}
   work_pool:
     name: omnipy
