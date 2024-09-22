@@ -74,9 +74,9 @@ def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_
          restore_outputs: ConfigRestoreOutputsOptions = 'disabled'):
 
     runtime.config.engine = engine
-    runtime.config.job.persist_data_dir_path = output_dir
-    runtime.config.job.persist_outputs = persist_outputs
-    runtime.config.job.restore_outputs = restore_outputs
+    runtime.config.job.output_storage.local.persist_data_dir_path = output_dir
+    runtime.config.job.output_storage.persist_outputs = persist_outputs
+    runtime.config.job.output_storage.restore_outputs = restore_outputs
     runtime.config.data.interactive_mode = True
 
 
