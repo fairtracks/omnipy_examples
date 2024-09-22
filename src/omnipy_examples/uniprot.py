@@ -1,8 +1,8 @@
 from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
 from omnipy.compute.task import TaskTemplate
-from omnipy.modules.json.datasets import JsonDataset
-from omnipy.modules.json.flows import (flatten_nested_json,
-                                       transpose_dicts_of_lists_of_dicts_2_lists_of_dicts)
+from omnipy.modules.json.datasets import JsonDataset, JsonDictOfListsOfDictsDataset
+from omnipy.modules.json.flows import flatten_nested_json
+from omnipy.modules.json.tasks import transpose_dicts_2_lists_old
 from omnipy.modules.pandas.models import PandasDataset
 from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
 import pandas as pd
@@ -10,12 +10,12 @@ import requests
 
 
 @TaskTemplate
-def import_uniprot() -> JsonDataset:
+def import_uniprot() -> JsonDictOfListsOfDictsDataset:
     HEADERS = {'accept': 'application/json'}
     api_url = 'https://rest.uniprot.org/uniprotkb/search?query=human%20cdc7'
     response = requests.get(api_url, headers=HEADERS)
     if response.status_code == 200:
-        dataset = JsonDataset()
+        dataset = JsonDictOfListsOfDictsDataset()
         dataset['uniprotkb'] = response.json()
         return dataset
     else:
@@ -42,7 +42,7 @@ def import_uniprot() -> JsonDataset:
     # TODO: When automatic transformation of task/flow inputs/outputs are implemented,
     #       remove to_pandas calls, here and otherwise
     import_uniprot,  # cast_json,
-    transpose_dicts_of_lists_of_dicts_2_lists_of_dicts,
+    transpose_dicts_2_lists_old,
     flatten_nested_json,
     convert_dataset_list_of_dicts_to_pandas)
 def import_and_flatten_uniprot() -> PandasDataset:
