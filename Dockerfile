@@ -4,6 +4,7 @@ ARG _PYTHON_VERSION=3.12
 FROM prefecthq/prefect:$_PREFECT_VERSION-python$_PYTHON_VERSION-kubernetes
 
 RUN pip install -r https://raw.githubusercontent.com/fairtracks/omnipy_examples/master/requirements.txt
+RUN pip uninstall -y omnipy
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
