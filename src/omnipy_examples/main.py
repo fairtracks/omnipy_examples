@@ -1,6 +1,8 @@
+import asyncio
 import importlib
 from pathlib import Path
 
+import anyio
 from omnipy import PandasDataset, runtime
 from omnipy.api.enums import ConfigPersistOutputsOptions, ConfigRestoreOutputsOptions, EngineChoice
 import typer
@@ -65,6 +67,20 @@ def chatgpt() -> object:
     from omnipy_examples.chatgpt import \
         get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop
     return get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
+
+
+async def _run_biomed():
+    from omnipy_examples.biomed import get_all_data
+    return await get_all_data.run()
+
+
+@app.command()
+def biomed() -> object:
+    from omnipy_examples.biomed import get_all_data
+
+    return asyncio.run(_run_biomed())
+    # return anyio.run(_run_biomed)
+    return get_all_data.run()
 
 
 @app.callback()
