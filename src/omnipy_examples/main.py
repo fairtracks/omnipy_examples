@@ -22,12 +22,13 @@ installed_example_data_path = get_path_to_example_data()
 def bed(
     owner: str = 'sunyumail93',
     repo: str = 'Bed12Processing',
+    branch: str = 'master',
     path: str = 'data',
     file_suffix: str = 'bed12',
 ) -> PandasDataset:
     from omnipy_examples.bed import import_bed_files_to_pandas
     return import_bed_files_to_pandas.run(
-        owner=owner, repo=repo, path=path, file_suffix=file_suffix)
+        owner=owner, repo=repo, branch=branch, path=path, file_suffix=file_suffix)
 
 
 @app.command()

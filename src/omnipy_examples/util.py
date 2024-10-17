@@ -3,8 +3,8 @@ from omnipy import JsonModel, Model, StrDataset, TaskTemplate
 
 
 @TaskTemplate
-def get_github_repo_urls(owner: str, repo: str, path: str, file_suffix: str,
-                         branch: str) -> StrDataset:
+def get_github_repo_urls(owner: str, repo: str, branch: str, path: str,
+                         file_suffix: str) -> StrDataset:
     api_url = f'https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={branch}'
     url_pre = f'https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}'
 

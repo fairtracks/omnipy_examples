@@ -59,3 +59,5 @@ line_length = 100
 python_version = "3.10"
 mypy_path = "src:tests"
 warn_no_return = false
+disable_error_code = ["valid-type", "empty-body"]
+
