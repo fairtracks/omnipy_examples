@@ -7,7 +7,14 @@ import json
 import aiohttp
 import anyio
 import numpy as np
-from omnipy import FuncFlowTemplate, JsonDataset, JsonModel, StrDataset, StrModel, TaskTemplate
+from omnipy import (FuncFlowTemplate,
+                    HttpUrlDataset,
+                    HttpUrlModel,
+                    JsonDataset,
+                    JsonModel,
+                    StrDataset,
+                    StrModel,
+                    TaskTemplate)
 from omnipy.compute.typing import mypy_fix_task_template
 import pandas as pd
 import requests
@@ -97,6 +104,17 @@ def get_api_url(n_size, j_page, fields):
     return api_url
 
 
+def get_api_url(fields: list[str], page_num: int = 0, page_size: int = 1000) -> HttpUrlModel:
+    url = HttpUrlModel('https://www.ebi.ac.uk/ebisearch/ws/rest/')
+    url.path // 'sra-sample'
+    url.query['query'] = 'country:Norway'
+    url.query['fields'] = ','.join(fields)
+    url.query['start'] = page_num * page_size
+    url.query['size'] = page_size
+    url.query['format'] = 'json'
+    return url
+
+
 #
 # @dataclass
 # class Components:
@@ -139,24 +157,31 @@ async def get_json_from_api_endpoint(url: str) -> JsonModel:
 #     return (results)
 #
 
+# @mypy_fix_task_template
+# @TaskTemplate()
+# async def get_dataset_size():
+#     data = JsonDataset()
+#     await data.load(size=get_api_url(['center_name', 'last_updated_date']))
+#     return data['size']['hitCount']
+
 
 @mypy_fix_task_template
 @TaskTemplate()
-async def get_dataset_size():
-    api_url = get_api_url(1, 1, ['center_name', 'last_updated_date'])
-    results = await get_json_from_api_endpoint(api_url)
-    return (results['hitCount'])
+async def get_all_data() -> JsonDataset:
+    data = JsonDataset()
+    fields = ['center_name', 'last_updated_date']
+    await data.load(page_0=get_api_url(fields, 0))
+    hit_count = data['page_0']['hitCount']
+
+    urls = HttpUrlDataset()
+    for i in range(hit_count // 1000 + 1):
+        urls[f'page_{i}'] = get_api_url(fields, i)
+
+    await data.load(urls)
+    return data
 
 
-@mypy_fix_task_template
-@TaskTemplate()
-def get_urls_for_all_data(dataset_size: int) -> StrDataset:
-    # get all the data
-    points_perpage = 1000  # max allowed by API
-    n_pages = dataset_size // points_perpage + 1  # pages to get the whole database
-    fields = ['center_name', 'last_updated_date']  # fields for plotting
-    return StrDataset({f'page_{i}': get_api_url(points_perpage, i, fields) for i in range(n_pages)})
-
+print(get_all_data.run())
 
 #
 # @mypy_fix_task_template
@@ -190,14 +215,13 @@ async def get_all_entries(urls: StrDataset) -> JsonDataset:
 #     return url_dataset
 #     # return await get_all_entries(url_dataset)
 
-
-@mypy_fix_task_template
-@FuncFlowTemplate()
-def get_all_data() -> JsonDataset:
-    # dataset_size = get_dataset_size()
-    dataset_size = 10000
-    urls = get_urls_for_all_data(dataset_size)
-    return get_all_entries(urls)
+# @mypy_fix_task_template
+# @FuncFlowTemplate()
+# def get_all_data() -> JsonDataset:
+#     # dataset_size = get_dataset_size()
+#     dataset_size = 10000
+#     urls = get_urls_for_all_data(dataset_size)
+#     return get_all_entries(urls)
 
 
 def get_entries(n_size, n_page, fields):
