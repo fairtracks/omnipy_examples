@@ -1,27 +1,23 @@
 from collections import defaultdict
-import os
-from typing import cast, Generic, List, Optional, Tuple, TypeAlias, TypeVar
+from math import nan
 
-from omnipy import bind_adjust_model_func, SplitLinesToColumnsModel, SplitToLinesModel, StrModel
-from omnipy.compute.flow import DagFlowTemplate, FuncFlowTemplate, LinearFlowTemplate
-from omnipy.compute.task import TaskTemplate
-from omnipy.data.dataset import Dataset
-from omnipy.data.helpers import debug_get_sorted_validate_counts, debug_get_total_validate_count
-from omnipy.data.model import Model
-from omnipy.modules.general.tasks import convert_dataset, import_directory, split_dataset
-from omnipy.modules.pandas.models import PandasDataset, PandasModel
-from omnipy.modules.pandas.tasks import (concat_dataframes_across_datasets,
-                                         convert_dataset_csv_to_pandas,
-                                         convert_dataset_pandas_to_csv,
-                                         extract_columns_as_files)
-from omnipy.modules.raw.datasets import (SplitLinesToColumnsDataset,
-                                         SplitToItemsDataset,
-                                         SplitToLinesDataset)
-from omnipy.modules.raw.models import _SplitToItemsMixin
-from omnipy.modules.raw.tasks import modify_all_lines, modify_datafile_contents, modify_each_line
-from omnipy.modules.tables.models import TableWithColNamesModel
+from omnipy import (Chain2,
+                    Chain3,
+                    convert_dataset,
+                    Dataset,
+                    import_directory,
+                    LinearFlowTemplate,
+                    Model,
+                    NestedSplitToItemsModel,
+                    PandasDataset,
+                    PandasModel,
+                    PersistOutputsOptions,
+                    SplitToLinesModel,
+                    TableListOfDictsOfJsonScalarsModel,
+                    TableOfPydanticRecordsModel,
+                    TaskTemplate)
 import pandas as pd
-from pydantic import BaseModel
+from pydantic import BaseModel, conint, constr
 
 # Constants
 
@@ -30,20 +26,11 @@ ATTRIB_COL = GFF_COLS[-1]
 
 # Models
 
-# class GffTableModel(Model[SplitLinesToColumnsModel | list[str]]):
-#     @classmethod
-#     def _parse_data(cls, data: SplitLinesToColumnsModel | list[str]) -> SplitLinesToColumnsModel:
-#         if isinstance(data, SplitLinesToColumnsModel):
-#             return data
-#         else:
-#             return SplitLinesToColumnsModel(data, delimiter='\t')
-
-
-class GffFileDataclassModel(BaseModel):
-    comments: list[str] = []
-    directives: list[str] = []
-    data: list[str] = []
-    sequences: list[str] = []
+# class GffFileDataclassModel(BaseModel):
+#     comments: list[str] = []
+#     directives: list[str] = []
+#     data: list[str] = []
+#     sequences: list[str] = []
 
 
 # class GffModel(Model[GffFileDataclassModel | SplitToLinesModel]):
@@ -74,39 +61,69 @@ class GffSectionsModel(Model[Dataset[Model[list[str]]] | SplitToLinesModel]):
                         gff_file['sequences'].append(line)
                     else:
                         gff_file['features'].append(line)
-        # print(debug_get_sorted_validate_counts())
         return gff_file
 
 
-class _SplitColumnValuesModelNew(
-        Model[list[list[list[str]]] | list[list[str]] | list[list[StrModel]]],
-        _SplitToItemsMixin,
-):
+class StrDotMissingModel(Model[str | None]):
     @classmethod
-    def _parse_data(
-        cls, data: list[list[list[str]]] | list[list[str]] | list[list[StrModel]]
-    ) -> list[list[list[str]]]:
-        if isinstance(data, list) and (len(data) == 0 or
-                                       (isinstance(data[0], list) and
-                                        (len(data[0]) == 0 or isinstance(data[0][0], list)))):
-            return cast(list[list[list[str]]], data)
-
-        return [[cls._split_line(cast(str, val)) for val in line] for line in data]
+    def _parse_data(cls, data: str | None) -> str | None:
+        return None if data == '.' else data
 
 
-class SplitColumnValuesModelNew(_SplitColumnValuesModelNew):
-    adjust = bind_adjust_model_func(_SplitColumnValuesModelNew.clone_model_cls,
-                                    _SplitColumnValuesModelNew.Params)
+GenomeCoord = conint(ge=0, le=2**64 - 1)
 
 
-# Functions
+class FloatDotMissingModel(Model[float | str]):
+    @classmethod
+    def _parse_data(cls, data: float | str) -> float:
+        return nan if data == '.' else float(data)
 
-#
-# def slice_lines_func(all_lines: List[str],
-#                      start: Optional[int] = None,
-#                      end: Optional[int] = None) -> List[str]:
-#     return all_lines[start:end]
-#
+
+class StrandBoolDotMissingModel(Model[bool | None | str]):
+    @classmethod
+    def _parse_data(cls, data: bool | None | str) -> bool | None:
+        if isinstance(data, str):
+            match data:
+                case '+':
+                    return True
+                case '-':
+                    return False
+                case '.':
+                    return None
+        else:
+            return data
+
+
+AttributesSplitToItemsModel = NestedSplitToItemsModel.adjust(
+    'AttributesSplitToItemsModel', delimiters=(';', '='))
+
+
+class GffRecordModel(BaseModel):
+    seqid: constr(min_length=1, max_length=255, regex='[a-zA-Z0-9]+')
+    source: StrDotMissingModel
+    type: StrDotMissingModel
+    start: GenomeCoord
+    end: GenomeCoord
+    score: FloatDotMissingModel
+    strand: Chain2[constr(regex='[-+\.]'), StrandBoolDotMissingModel]
+    phase: Chain2[constr(regex='[012\.]'), FloatDotMissingModel]
+    attributes: str
+
+
+# Omnipy models
+class GffFeaturesModel(Chain2[SplitToLinesModel, TableOfPydanticRecordsModel[GffRecordModel]]):
+    ...
+
+
+# Chained models
+
+# TODO: Fix deepcopy issue in AttributesToPandasModel.
+
+AttributesToPandasModel = Chain3[
+    Model[list[AttributesSplitToItemsModel]],
+    TableListOfDictsOfJsonScalarsModel,
+    PandasModel,
+]
 
 # Tasks
 
@@ -114,53 +131,21 @@ class SplitColumnValuesModelNew(_SplitColumnValuesModelNew):
 @TaskTemplate(iterate_over_data_files=True)
 def gff_to_pandas(dataset: GffSectionsModel) -> PandasDataset:
     output = PandasDataset()
-    for key in dataset.keys():
-
+    for key, val in dataset.items():
         if key == 'features':
-            columns = SplitLinesToColumnsModel(dataset[key])
-            # print('SplitLinesToColumnsModel', debug_get_sorted_validate_counts())
-
-            columns.insert(0, GFF_COLS)
-            table = PandasModel(TableWithColNamesModel(columns))
-            # print('TableWithColNamesModel', debug_get_sorted_validate_counts())
-
-            main_cols = table.loc[:, :'phase']
-            attributes_col = table['attributes']
-            attributes_as_list = attributes_col.values.to_numpy().tolist()
-            SplitLinesToColumnsOnSemicolonModel = SplitLinesToColumnsModel.adjust(
-                'SplitLinesToColumnsOnSemicolonModel', delimiter=';')
-            attributes_as_table = SplitLinesToColumnsOnSemicolonModel(attributes_as_list)
-            # print('SplitLinesToColumnsModel', debug_get_sorted_validate_counts())
-
-            SplitColumnValuesOnEqualsModel = SplitColumnValuesModelNew.adjust(
-                'SplitColumnValuesOnEqualsModel', delimiter='=')
-            attributes_as_table_of_pairs = SplitColumnValuesOnEqualsModel(attributes_as_table)
-            # print('SplitColumnValuesModel', debug_get_sorted_validate_counts())
-
-            attributes_as_kw_table = PandasModel(attributes_as_table_of_pairs)
-            # print('PandasModel', debug_get_sorted_validate_counts())
-
-            table = PandasModel(
-                pd.concat([main_cols, attributes_as_kw_table.contents], axis=1, join='inner'))
+            plain_table = PandasModel(GffFeaturesModel(val))
+            attributes_as_list: list[str] = plain_table[ATTRIB_COL].to_list()
+            attributes_table = AttributesToPandasModel(attributes_as_list)
+            # attributes_table = PandasModel(
+            #     TableListOfDictsOfJsonScalarsModel(
+            #         Model[list[AttributesSplitToItemsModel]](attributes_as_list)))
+            plain_table = plain_table.drop(columns=[ATTRIB_COL])
+            table = PandasModel(pd.concat([plain_table, attributes_table], axis=1, join='inner'))
         else:
-            table = PandasModel(dataset[key])
+            table = PandasModel(val)
         output[key] = table
-        # print(key, debug_get_sorted_validate_counts())
-    # print(debug_get_total_validate_count())
     return output
 
-
-#
-# @TaskTemplate()
-# def attrib_df_names(dataset: Dataset[Model[object]]) -> List[str]:
-#     return [name for name in dataset.keys() if name.endswith(ATTRIB_COL)]
-#
-#
-# @TaskTemplate()
-# def transform_attr_line_to_json(_line_no: int, line: str) -> str:
-#     items = [item.strip().split('=') for item in line.strip().split(';') if item]
-#     json_obj_items = [f'"{key}": "{val}"' for key, val in items]
-#     return f'{{{", ".join(json_obj_items)}}},' + os.linesep
 
 # Flows
 
@@ -169,121 +154,15 @@ def gff_to_pandas(dataset: GffSectionsModel) -> PandasDataset:
     import_directory.refine(
         name='import_gff_files',
         fixed_params=dict(include_suffixes=('.gff',), model=Model[str]),
-        persist_outputs='disabled',
+        # persist_outputs=PersistOutputsOptions.DISABLED,
     ),
     convert_dataset.refine(
         name='parse_gff',
         fixed_params=dict(dataset_cls=Dataset[GffSectionsModel]),
-        persist_outputs='disabled',
+        # persist_outputs=PersistOutputsOptions.DISABLED,
     ),
-    gff_to_pandas.refine(persist_outputs='disabled',),
-    # convert_dataset.refine(
-    #     name='parse_json',
-    #     fixed_params=dict(dataset_cls=GffModel),
-    # ),
-    # convert_dataset_csv_to_pandas.refine(
-    #     name='convert_gff_to_pandas',
-    #     fixed_params=dict(delimiter='\t', first_row_as_col_names=False, col_names=GFF_COLS),
-    # ),
-    persist_outputs='disabled',
+    gff_to_pandas.refine(persist_outputs=PersistOutputsOptions.DISABLED,),
+    # persist_outputs=PersistOutputsOptions.DISABLED,
 )
 def import_gff_as_pandas(directory: str) -> PandasDataset:
     ...
-
-    # num_lines: Optional[int] = None)
-
-
-#
-# @DagFlowTemplate(
-#     extract_columns_as_files.refine(
-#         fixed_params=dict(col_names=[ATTRIB_COL]),
-#         result_key='dataset',
-#     ),
-#     attrib_df_names.refine(result_key='datafile_names_for_b'),
-#     split_dataset,
-# )
-# def extract_attrib_col_as_separate_dataset(
-#         dataset: PandasDataset) -> Tuple[PandasDataset, PandasDataset]:
-#     ...
-#
-#
-# @LinearFlowTemplate(
-#     convert_dataset_pandas_to_csv.refine(fixed_params=dict(first_row_as_col_names=False)),
-#     modify_each_line.refine(
-#         name='transform_all_lines_to_json',
-#         fixed_params=dict(modify_line_func=transform_attr_line_to_json),
-#     ),
-#     modify_datafile_contents.refine(
-#         name='transform_datafile_start_and_end_to_json',
-#         fixed_params=dict(modify_contents_func=lambda x: f'[{x[:-2]}]'),
-#     ),  # Brackets + strip comma and newline from end
-# )
-# def convert_attrib_col_to_table(dataset: PandasDataset) -> PandasDataset:
-#     ...
-
-# import_gff_as_pandas.run('input/gff', num_lines=1000)
-
-#
-# @FuncFlowTemplate
-# def import_gff_and_convert_to_pandas() -> PandasDataset:
-#     data: PandasDataset = import_gff_as_pandas(1000)
-#     return data
-#
-#
-# import_gff_and_convert_to_pandas.run()
-
-# data_9_attrib = Dataset[JsonTableOfStrings]()
-# data_9_attrib.from_json(data_8_attrib.to_data())
-#
-# pd_data_7_attrib = PandasDataset()
-# pd_data_7_attrib.from_data(data_9_attrib.to_data())
-#
-# pd_data_10 = concat_dataframes_across_datasets(
-#     [pd_data_5_main, pd_data_7_attrib],
-#     vertical=False,
-# )
-# return pd_data_10
-
-# @FuncFlowTemplate()
-# def convert_gff_files(data: Dataset[Model[str]]) -> PandasDataset:
-#     data = import_directory('input/gff', suffix='.gff', model=Model[str])
-#
-#     data__2 = slice_lines(data, start=0, end=1000)
-#
-#     pd_data_3 = convert_dataset_csv_to_pandas(data_2,
-#                                               delimiter='\t',
-#                                               first_row_as_col_names=False,
-#                                               col_names=GFF_COLS)
-#
-#     pd_data_4 = extract_columns_as_files(pd_data_3, [ATTRIB_COL])
-#
-#     pd_data_5_main, pd_data_3_attrib = split_dataset(
-#         pd_data_4, attrib_df_names(pd_data_4))
-#
-#     data_6_attrib = to_csv(pd_data_3_attrib, first_row_as_col_names=False)
-#
-#     data_7_attrib = transform_all_lines_to_json(data_6_attrib)
-#
-#     data_8_attrib = transform_datafile_start_and_end_to_json(data_7_attrib)
-#
-#     data_9_attrib = Dataset[JsonTableOfStrings]()
-#     data_9_attrib.from_json(data_8_attrib.to_data())
-#
-#     pd_data_7_attrib = PandasDataset()
-#     pd_data_7_attrib.from_data(data_9_attrib.to_data())
-#
-#     pd_data_10 = concat_dataframes_across_datasets(
-#         [pd_data_5_main, pd_data_7_attrib],
-#         vertical=False,
-#     )
-#     return pd_data_10
-
-# @FuncFlowTemplate
-# def import_gff_and_convert_to_pandas() -> PandasDataset:
-#     data: Dataset[Model[str]] = import_directory('input/gff',
-#                                                  suffix='.gff',
-#                                                  model=Model[str])
-#     return convert_gff_files(data)
-#
-#
-# import_gff_and_convert_to_pandas.run()
