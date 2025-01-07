@@ -17,7 +17,7 @@ reader = "^3.4"
 #github3-py = "^3.2.0"
 #pandas = "1.5.3"
 #pytest = "<8"
-omnipy = "^0.16.1"
+omnipy = "0.20.1"
 #omnipy = { git = "https://github.com/fairtracks/omnipy.git", branch = "release_0.16.0" }
 boto3 = "^1.35.23"
 #prefect-aws = "<0.5"

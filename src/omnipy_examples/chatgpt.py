@@ -7,11 +7,7 @@ import time
 
 import github3
 import httpx
-from omnipy import runtime
-from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
-from omnipy.compute.task import TaskTemplate
-from omnipy.data.dataset import Dataset
-from omnipy.data.model import Model
+from omnipy import Dataset, FuncFlowTemplate, LinearFlowTemplate, Model, runtime, TaskTemplate
 from omnipy_examples.chatgpt_words import (literary_styles,
                                            surrealistic_adjectives,
                                            surrealistic_nouns)

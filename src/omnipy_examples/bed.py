@@ -1,7 +1,9 @@
+from docker.utils.json_stream import json_decoder
 from omnipy import (Chain2,
                     Chain3,
                     convert_dataset,
                     Dataset,
+                    HttpUrlDataset,
                     LinearFlowTemplate,
                     MatchItemsModel,
                     Model,
@@ -63,10 +65,10 @@ class BedDataset(Dataset[BedModel]):
 
 
 # Omnipy tasks
-@TaskTemplate
-def fetch_bed_dataset(url_list: StrDataset) -> StrDataset:
+@TaskTemplate()
+def fetch_bed_dataset(url_list: HttpUrlDataset) -> StrDataset:
     bed_raw_dataset = StrDataset()
-    bed_raw_dataset.load(*url_list.values())
+    bed_raw_dataset.load(url_list)
     return bed_raw_dataset
 
 
@@ -78,7 +80,8 @@ def fetch_bed_dataset(url_list: StrDataset) -> StrDataset:
     convert_dataset.refine(
         name='convert_to_dataframe', fixed_params={'dataset_cls': PandasDataset}),
 )
-def import_bed_files_to_pandas(owner: str, repo: str, path: str, file_suffix: str) -> PandasDataset:
+def import_bed_files_to_pandas(owner: str, repo: str, branch: str, path: str,
+                               file_suffix: str) -> PandasDataset:
     ...
 
 
@@ -86,3 +89,5 @@ def import_bed_files_to_pandas(owner: str, repo: str, path: str, file_suffix: st
 if __name__ == '__main__':
     import_bed_files_to_pandas.run(
         owner='arq5x', repo='bedtools2', branch='master', path='data', file_suffix='bed')
+
+json_decoder

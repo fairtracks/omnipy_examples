@@ -1,8 +1,11 @@
 import importlib
 from pathlib import Path
 
-from omnipy import PandasDataset, runtime
-from omnipy.api.enums import ConfigPersistOutputsOptions, ConfigRestoreOutputsOptions, EngineChoice
+from omnipy import (ConfigPersistOutputsOptions,
+                    ConfigRestoreOutputsOptions,
+                    EngineChoice,
+                    PandasDataset,
+                    runtime)
 import typer
 
 app = typer.Typer()

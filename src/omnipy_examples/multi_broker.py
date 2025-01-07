@@ -1,7 +1,6 @@
 from typing import Callable, Optional, TypeAlias
 
-from omnipy.modules.json.datasets import JsonDataset
-from omnipy.modules.json.models import JsonModel
+from omnipy import JsonDataset, JsonModel
 from pydantic import BaseModel
 
 IsaJsonModel: TypeAlias = JsonModel

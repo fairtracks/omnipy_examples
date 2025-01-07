@@ -1,9 +1,9 @@
-from omnipy.compute.flow import LinearFlowTemplate
-from omnipy.modules.fairtracks.tasks import import_dataset_from_encode
-from omnipy.modules.json.flows import flatten_nested_json
-from omnipy.modules.pandas.models import PandasDataset
-from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
-from omnipy.modules.tables.tasks import remove_columns
+from omnipy import (convert_dataset_list_of_dicts_to_pandas,
+                    flatten_nested_json,
+                    LinearFlowTemplate,
+                    PandasDataset,
+                    remove_columns)
+from omnipy.components._fairtracks.tasks import import_dataset_from_encode
 
 # cast_to_dict_on_top = cast_dataset.refine(
 #     name='cast_to_dict_on_top',
@@ -17,7 +17,7 @@ from omnipy.modules.tables.tasks import remove_columns
 # runtime.config.prefect.use_cached_results = True
 #
 #
-# @FuncFlowTemplate
+# @FuncFlowTemplate()
 # def import_encode_data_tmpl():
 #     encode_json = import_dataset_from_encode(
 #         endpoints=[

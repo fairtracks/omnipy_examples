@@ -1,15 +1,16 @@
-from omnipy.compute.flow import FuncFlowTemplate, LinearFlowTemplate
-from omnipy.compute.task import TaskTemplate
-from omnipy.modules.json.datasets import JsonDataset, JsonDictOfListsOfDictsDataset
-from omnipy.modules.json.flows import flatten_nested_json
-from omnipy.modules.json.tasks import transpose_dicts_2_lists_old
-from omnipy.modules.pandas.models import PandasDataset
-from omnipy.modules.pandas.tasks import convert_dataset_list_of_dicts_to_pandas
+from omnipy import (convert_dataset_list_of_dicts_to_pandas,
+                    flatten_nested_json,
+                    FuncFlowTemplate,
+                    JsonDictOfListsOfDictsDataset,
+                    LinearFlowTemplate,
+                    PandasDataset,
+                    TaskTemplate,
+                    transpose_dicts_2_lists)
 import pandas as pd
 import requests
 
 
-@TaskTemplate
+@TaskTemplate()
 def import_uniprot() -> JsonDictOfListsOfDictsDataset:
     HEADERS = {'accept': 'application/json'}
     api_url = 'https://rest.uniprot.org/uniprotkb/search?query=human%20cdc7'
@@ -42,14 +43,14 @@ def import_uniprot() -> JsonDictOfListsOfDictsDataset:
     # TODO: When automatic transformation of task/flow inputs/outputs are implemented,
     #       remove to_pandas calls, here and otherwise
     import_uniprot,  # cast_json,
-    transpose_dicts_2_lists_old,
+    transpose_dicts_2_lists,
     flatten_nested_json,
     convert_dataset_list_of_dicts_to_pandas)
 def import_and_flatten_uniprot() -> PandasDataset:
     ...
 
 
-@TaskTemplate
+@TaskTemplate()
 def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     #  Get synonym table and clean foreign key
     df_synonym = pandas['results.genes.synonyms'].contents
@@ -83,7 +84,7 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     return out_dataset
 
 
-@TaskTemplate
+@TaskTemplate()
 def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
     df_merge_1 = pd.merge(
         dataset['results.genes.geneName'].contents,
@@ -138,7 +139,7 @@ def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
     return out_dataset
 
 
-# @TaskTemplate
+# @TaskTemplate()
 # def pandas_magic_unimplemented(dataset: PandasDataset) -> PandasDataset:
 #     out_dataset = PandasDataset()
 #     out_dataset['my_table'] = extract_mapped_table_from_flattened_dataset(
@@ -155,14 +156,14 @@ def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
 #     return out_dataset
 
 
-@FuncFlowTemplate
+@FuncFlowTemplate()
 def import_and_flatten_uniprot_with_magic() -> PandasDataset:
     uniprot_6_ds = import_and_flatten_uniprot()
     uniprot_7_ds = pandas_magic_alternative(uniprot_6_ds)
     return uniprot_7_ds
 
 
-# @TaskTemplate
+# @TaskTemplate()
 # def join_a_with_b(pandas_ds: PandasDataset,
 #                   table_a_name: str,
 #                   a_ref_column: str,

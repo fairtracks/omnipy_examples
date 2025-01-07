@@ -1,21 +1,21 @@
 import asyncio
 
-import omnipy.modules.json.util
-import omnipy.modules.pandas.util
-import omnipy.modules.raw.util
+import omnipy.components.json.util
+import omnipy.components.pandas.util
+import omnipy.components.raw.util
 
-omnipy.modules.json.util.ROOT_DIR = '../../input/bif'
-omnipy.modules.pandas.util.ROOT_DIR = '../../input/bif'
-omnipy.modules.raw.util.ROOT_DIR = '../../input/bif'
+omnipy.components.json.util.ROOT_DIR = '../../input/bif'
+omnipy.components.pandas.util.ROOT_DIR = '../../input/bif'
+omnipy.components.raw.util.ROOT_DIR = '../../input/bif'
 
 
-# @TaskTemplate
+# @TaskTemplate()
 async def fetch_from_api(what: str):
     asyncio.sleep(10)
     return what
 
 
-# @FuncFlowTemplate
+# @FuncFlowTemplate()
 async def caller():
     data = fetch_from_api('asdsda')
     data2 = fetch_from_api('asdd')

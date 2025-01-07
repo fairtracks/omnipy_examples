@@ -1,9 +1,9 @@
-from omnipy.compute.flow import LinearFlowTemplate
-from omnipy.modules.general.tasks import import_directory
-from omnipy.modules.json.datasets import JsonDictOfDictsDataset
-from omnipy.modules.raw.tasks import modify_datafile_contents
+from omnipy import (import_directory,
+                    JsonDictOfDictsDataset,
+                    LinearFlowTemplate,
+                    modify_datafile_contents)
 
-# from omnipy.modules.r_stat import r
+# from omnipy.components.r_stat import r
 
 # Regex patterns for parsing
 #     variable_pattern = re.compile(r"  type discrete \[ \d+ \] \{ (.+) \};\s*")
@@ -14,7 +14,7 @@ from omnipy.modules.raw.tasks import modify_datafile_contents
 #         re.compile(r"probability \( (.+) \| (.+) \) \{\s*"))
 #     conditional_probability_pattern_2 = re.compile(r"  \((.+)\) (.+);\s*")
 
-# @TaskTemplate
+# @TaskTemplate()
 # def import_dag_from_bnlearn(dag_name: str):
 #     r('chooseCRANmirror(ind = 1)')
 #     r('install.binaries("bnlearn")')

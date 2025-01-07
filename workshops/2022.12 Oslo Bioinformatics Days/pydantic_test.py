@@ -1,8 +1,8 @@
 from typing import Dict, List
 
+from omnipy.components.pandas.datasets import PandasDataset
 from omnipy.data.dataset import Dataset, MultiModelDataset
 from omnipy.data.model import Model
-from omnipy.modules.pandas.models import PandasDataset
 from pydantic import BaseModel, validator
 
 
