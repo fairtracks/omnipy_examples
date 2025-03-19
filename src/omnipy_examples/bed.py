@@ -1,18 +1,8 @@
-from docker.utils.json_stream import json_decoder
-from omnipy import (Chain2,
-                    Chain3,
-                    convert_dataset,
-                    Dataset,
-                    HttpUrlDataset,
-                    LinearFlowTemplate,
-                    MatchItemsModel,
-                    Model,
-                    PandasDataset,
-                    SplitToItemsModel,
-                    SplitToLinesModel,
-                    StrDataset,
-                    TableOfPydanticRecordsModel,
-                    TaskTemplate)
+from typing import Literal
+
+from omnipy import (Chain2, Chain3, convert_dataset, Dataset, HttpUrlDataset, LinearFlowTemplate,
+                    MatchItemsModel, Model, PandasDataset, SplitToItemsModel, SplitToLinesModel,
+                    TableOfPydanticRecordsModel, TaskTemplate)
 from omnipy_examples.util import get_github_repo_urls
 from pydantic import BaseModel, conint, constr
 
@@ -46,7 +36,7 @@ class BedRecordModel(BaseModel):
     strand: constr(regex='[-+\.]') | None
     thickStart: GenomeCoord | None
     thickEnd: GenomeCoord | None
-    itemRgb: SplitOnComma2RgbColorModel | conint(ge=0, le=0) | None
+    itemRgb: SplitOnComma2RgbColorModel | Literal[0] | None
     blockCount: conint(ge=0) | None
     blockSizes: SplitOnComma2ListOfIntsModel | None
     blockStarts: SplitOnComma2ListOfIntsModel | None
@@ -66,8 +56,8 @@ class BedDataset(Dataset[BedModel]):
 
 # Omnipy tasks
 @TaskTemplate()
-def fetch_bed_dataset(url_list: HttpUrlDataset) -> StrDataset:
-    bed_raw_dataset = StrDataset()
+def fetch_bed_dataset(url_list: HttpUrlDataset) -> BedDataset:
+    bed_raw_dataset = BedDataset()
     bed_raw_dataset.load(url_list)
     return bed_raw_dataset
 
@@ -76,7 +66,6 @@ def fetch_bed_dataset(url_list: HttpUrlDataset) -> StrDataset:
 @LinearFlowTemplate(
     get_github_repo_urls,
     fetch_bed_dataset,
-    convert_dataset.refine(name='parse_bed', fixed_params={'dataset_cls': BedDataset}),
     convert_dataset.refine(
         name='convert_to_dataframe', fixed_params={'dataset_cls': PandasDataset}),
 )
@@ -89,5 +78,3 @@ def import_bed_files_to_pandas(owner: str, repo: str, branch: str, path: str,
 if __name__ == '__main__':
     import_bed_files_to_pandas.run(
         owner='arq5x', repo='bedtools2', branch='master', path='data', file_suffix='bed')
-
-json_decoder
