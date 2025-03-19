@@ -23,11 +23,11 @@ installed_example_data_path = get_path_to_example_data()
 
 @app.command()
 def bed(
-    owner: str = 'sunyumail93',
-    repo: str = 'Bed12Processing',
+    owner: str = 'arq5x',
+    repo: str = 'bedtools2',
     branch: str = 'master',
     path: str = 'data',
-    file_suffix: str = 'bed12',
+    file_suffix: str = 'bed',
 ) -> PandasDataset:
     from omnipy_examples.bed import import_bed_files_to_pandas
     return import_bed_files_to_pandas.run(
@@ -69,6 +69,12 @@ def chatgpt() -> object:
     from omnipy_examples.chatgpt import \
         get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop
     return get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
+
+
+@app.command()
+def seqcol() -> object:
+    from omnipy_examples.seqcol import seqcol_tests
+    return seqcol_tests.run()
 
 
 @app.callback()
