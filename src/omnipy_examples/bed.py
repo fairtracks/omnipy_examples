@@ -1,8 +1,19 @@
 from typing import Literal
 
-from omnipy import (Chain2, Chain3, convert_dataset, Dataset, HttpUrlDataset, LinearFlowTemplate,
-                    MatchItemsModel, Model, PandasDataset, SplitToItemsModel, SplitToLinesModel,
-                    TableOfPydanticRecordsModel, TaskTemplate, StrDataset)
+from omnipy import (Chain2,
+                    Chain3,
+                    convert_dataset,
+                    Dataset,
+                    HttpUrlDataset,
+                    LinearFlowTemplate,
+                    MatchItemsModel,
+                    Model,
+                    PandasDataset,
+                    SplitToItemsModel,
+                    SplitToLinesModel,
+                    StrDataset,
+                    TableOfPydanticRecordsModel,
+                    TaskTemplate)
 from omnipy_examples.util import get_github_repo_urls
 from pydantic import BaseModel, conint, constr
 
@@ -73,4 +84,3 @@ def fetch_bed_dataset(url_list: HttpUrlDataset) -> StrDataset:
 def import_bed_files_to_pandas(owner: str, repo: str, branch: str, path: str,
                                file_suffix: str) -> PandasDataset:
     ...
-
