@@ -214,7 +214,7 @@ def calculate_sorted_name_length_pairs_digest(name_length_pairs: NameLengthPairL
     """Calculate the digest of a sorted name-length pairs."""
     sorted_name_length_pairs = sorted(
         calculate_seqcol_digest(name_length_pair.dict()) for name_length_pair in name_length_pairs)
-    return calculate_seqcol_digest(list(sorted_name_length_pairs))
+    return calculate_seqcol_digest(cast(list, sorted_name_length_pairs))
 
 
 @TaskTemplate(
