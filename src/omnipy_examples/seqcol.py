@@ -325,12 +325,3 @@ def persist_seqcol_digests_on_target(
 def seqcol_digest_check(owner: str, repo: str, branch: str,
                         path: Path) -> SeqColDigestTargetDataset:
     ...
-
-
-# Running the flow
-if __name__ == '__main__':
-    seqcol_digest_check.run(
-        owner='refgenie',
-        repo='refget',
-        branch='dev',
-        path=Path('test_fasta/test_fasta_digests.json'))

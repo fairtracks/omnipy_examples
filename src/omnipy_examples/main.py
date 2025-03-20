@@ -72,9 +72,17 @@ def chatgpt() -> object:
 
 
 @app.command()
-def seqcol() -> object:
-    from omnipy_examples.seqcol import seqcol_tests
-    return seqcol_tests.run()
+def seqcol(owner: str = 'refgenie',
+           repo: str = 'refget',
+           branch: str = 'dev',
+           path: Path = Path('test_fasta/test_fasta_digests.json')) -> object:
+    from omnipy_examples.seqcol import seqcol_digest_check
+    return seqcol_digest_check.run(
+        owner=owner,
+        repo=repo,
+        branch=branch,
+        path=path,
+    )
 
 
 @app.callback()
