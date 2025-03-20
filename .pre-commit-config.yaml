@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-yaml
         types: [ yaml ]
@@ -10,11 +10,11 @@ repos:
       - id: check-ast
         types: [ python ]
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.8.0
+    rev: 2.1.1
     hooks:
       - id: poetry-check
   - repo: https://github.com/google/yapf
-    rev: v0.40.2
+    rev: v0.43.0
     hooks:
       - id: yapf
         name: "yapf"
@@ -25,11 +25,11 @@ repos:
       - id: yapf
         name: "yapf (check)"
         additional_dependencies: [toml]
-        args: [ '--style', 'pyproject.toml', '--parallel', '--diff' ]
+        args: [ '--style', 'pyproject.toml', '--diff' ]
         stages: [ manual ]
         types: [ python ]
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 6.0.0
     hooks:
       - id: isort
         name: isort
@@ -41,7 +41,7 @@ repos:
         stages: [ manual ]
         types: [ python ]
   - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 7.1.2
     hooks:
       - id: flake8
         additional_dependencies: [flake8-quotes==3.3.2]

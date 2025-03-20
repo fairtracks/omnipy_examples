@@ -24,10 +24,12 @@ boto3 = "^1.35.23"
 #griffe = "<1"
 #numpy = "<2"
 prefect = ">2.20"
+jsoncanon = "^0.2.3"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
 mypy = "^1.11.2"
+pyright = "^1.1.397"
 
 [tool.poetry.scripts]
 omnipy-examples = "omnipy_examples.main:app"
@@ -37,6 +39,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.yapf]
+allow_split_before_dict_value = true
 based_on_style = "google"
 align_closing_bracket_with_visual_indent = true
 blank_line_before_nested_class_or_def = false
@@ -46,6 +49,8 @@ join_multiple_lines = true
 split_all_comma_separated_values = false
 split_all_top_level_comma_separated_values = true
 split_before_expression_after_opening_paren = true
+split_before_bitwise_operator = true
+split_before_logical_operator = true
 split_before_arithmetic_operator = true
 
 [tool.isort]
