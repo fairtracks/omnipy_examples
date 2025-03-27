@@ -9,14 +9,11 @@ from omnipy import (DagFlowTemplate,
                     Dataset,
                     FuncFlowTemplate,
                     HttpUrlDataset,
-                    JsonCustomListModel,
-                    JsonListOfDictsModel,
-                    JsonListOfScalarsModel,
+                    JsonDictOfDictsModel,
                     Model,
                     PersistOutputsOptions,
                     runtime,
                     StrDataset,
-                    StrModel,
                     TableOfPydanticRecordsModel,
                     TaskTemplate)
 from omnipy_examples.util import get_github_repo_urls
@@ -137,9 +134,9 @@ def fetch_seqcol_digest_targets(
     #      StrDataset as the content_type is 'text/plain'.
     content = StrDataset()
     content.load(seqcol_digest_target_urls)
-    seqcol_digest_target_file = JsonListOfDictsModel()
+    seqcol_digest_target_file = JsonDictOfDictsModel()
     seqcol_digest_target_file.from_json(content[0].to_data())
-    return SeqColDigestTargetDataset({f['name']: f for f in seqcol_digest_target_file})
+    return SeqColDigestTargetDataset({f['name']: f for f in seqcol_digest_target_file.values()})
 
 
 @FuncFlowTemplate(result_key='fasta_checksums')
