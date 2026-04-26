@@ -18,7 +18,9 @@ dependencies = [
     "prefect (>=2.13.2,<3)",
     "typing-extensions (>=4.12.2,<5)",
     "python-slugify (>=8.0.4,<9)",
-    "jsoncanon (>=0.2.3)"]
+    "jsoncanon (>=0.2.3)",
+    "cyclopts>=4.11.0",
+]
 
 [dependency-groups]
 dev = ["pre-commit (>=3.8.0)",

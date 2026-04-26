@@ -1,20 +1,20 @@
-import importlib
 from pathlib import Path
 
+import cyclopts
+import importlib_resources
 from omnipy import (ConfigPersistOutputsOptions,
                     ConfigRestoreOutputsOptions,
                     EngineChoice,
                     PandasDataset,
                     runtime)
-import typer
 
-app = typer.Typer()
+app = cyclopts.App(result_action="return_value")
 
 
 def get_path_to_example_data() -> Path:
-    ref = importlib.resources.files('omnipy_example_data')
+    ref = importlib_resources.files('omnipy_example_data')
     path: Path
-    with importlib.resources.as_file(ref) as path:
+    with importlib_resources.as_file(ref) as path:
         return path.resolve()
 
 
@@ -85,18 +85,38 @@ def seqcol(owner: str = 'refgenie',
     )
 
 
-@app.callback()
+@app.meta.default
 def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_dir_path,
-         engine: EngineChoice = 'local',
-         persist_outputs: ConfigPersistOutputsOptions = 'all',
-         restore_outputs: ConfigRestoreOutputsOptions = 'disabled'):
+         engine: EngineChoice.Literals = 'local',
+         persist_outputs: ConfigPersistOutputsOptions.Literals = 'all',
+         restore_outputs: ConfigRestoreOutputsOptions.Literals = 'disabled',
+         *args):
 
-    runtime.config.engine = engine
+    runtime.config.engine.choice = engine
     runtime.config.job.output_storage.local.persist_data_dir_path = output_dir
     runtime.config.job.output_storage.persist_outputs = persist_outputs
     runtime.config.job.output_storage.restore_outputs = restore_outputs
-    runtime.config.data.interactive_mode = True
+    runtime.config.data.model.interactive = False
+
+    ret = app(*args)
+
+    print('--------------------------')
+    print('Overview of output dataset')
+    print('--------------------------')
+    ret.list(height=None)
+
+    print('------------------------')
+    print('Peek into output dataset')
+    print('------------------------')
+    ret.peek()
+
+    print('-------------------------------')
+    print('Peek into first file of dataset')
+    print('-------------------------------')
+    ret[0].peek()
+
+    return ret
 
 
 if __name__ == '__main__':
-    app()
+    app.meta()
