@@ -45,21 +45,64 @@ More info on Prefect configuration will come soon...
 
 ## Development setup
 
-- Install Poetry:
-  - `curl -sSL https://install.python-poetry.org | python3 -`
+### Install Python, uv and dependencies
+
+- Make sure that you have Python v3 available from your path. Installation of this depends on your
+  local setup. We recommend using `conda`, `pyenv` or `asdf` to manage Python versions. If you are 
+  using Conda, you can install a Python environment with:
+
+  - `conda create -n omnipy python=3.10`
+  - `conda activate omnipy`
+
+- Install uv:
+  - `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 - Install dependencies:
-  - `poetry install --with dev`
+  - `uv sync --all-groups`
+
+### uv commands
+
+#### Installing dependencies
+
+- Install all dependencies (including all groups):
+  - `uv sync --all-groups`
+
+- Install only main dependencies:
+  - `uv sync`
+
+- Install specific dependency groups:
+  - `uv sync --group dev`
+  - `uv sync --group docs`
+
+#### Updating dependencies
 
 - Update all dependencies:
-  - `poetry update`
+  - `uv lock --upgrade`
 
 - Update single dependency, e.g.:
-  - `poetry update omnipy`
+  - `uv lock --upgrade-package prefect`
 
-- If a dependency is not updated to the latest version available on Pypi, you might need to clear
-  the pip cache of poetry:
-  - `poetry cache clear pypi --all`
+
+- If a dependency is not updated to the latest version available on Pypi,
+  you might need to clear the cache:
+  - `uv cache clean`
+
+#### Running commands
+
+- Run any command in the virtual environment:
+  - `uv run <command>`
+  - Examples:
+    - `uv run pytest`
+    - `uv run python script.py`
+    - `uv run mkdocs serve`
+
+#### Building and publishing
+
+- Build the package:
+  - `uv build`
+
+- Install in editable mode:
+  - `uv pip install -e .`
 
 ### For mypy support in PyCharm
 
