@@ -65,13 +65,6 @@ def uniprot() -> object:
 
 
 @app.command()
-def chatgpt() -> object:
-    from omnipy_examples.chatgpt import \
-        get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop
-    return get_chatgpt_interpretation_of_biorxiv_entries_and_commit_loop.run()
-
-
-@app.command()
 def seqcol(owner: str = 'refgenie',
            repo: str = 'refget',
            branch: str = 'dev',
