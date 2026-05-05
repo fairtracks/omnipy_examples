@@ -5,6 +5,7 @@ import importlib_resources
 from omnipy import (ConfigPersistOutputsOptions,
                     ConfigRestoreOutputsOptions,
                     EngineChoice,
+                    is_dataset_instance,
                     PandasDataset,
                     runtime)
 
@@ -86,23 +87,24 @@ def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_
     runtime.config.data.model.interactive = False
 
     ret = app(*args)
+    if is_dataset_instance(ret):
 
-    print('--------------------------')
-    print('Overview of output dataset')
-    print('--------------------------')
-    ret.list(height=None)
+        print('--------------------------')
+        print('Overview of output dataset')
+        print('--------------------------')
+        ret.list(height=None)
 
-    print('------------------------')
-    print('Peek into output dataset')
-    print('------------------------')
-    ret.peek()
+        print('------------------------')
+        print('Peek into output dataset')
+        print('------------------------')
+        ret.peek()
 
-    print('-------------------------------')
-    print('Peek into first file of dataset')
-    print('-------------------------------')
-    ret[0].peek()
+        print('-------------------------------')
+        print('Peek into first file of dataset')
+        print('-------------------------------')
+        ret[0].peek()
 
-    return ret
+        return ret
 
 
 if __name__ == '__main__':
