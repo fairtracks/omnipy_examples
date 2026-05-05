@@ -35,12 +35,6 @@ def bed(
 
 
 @app.command()
-def dagsim(input_dir: str = installed_example_data_path.joinpath('bif')) -> object:
-    from omnipy_examples.dagsim import import_and_convert_bif_files_to_json
-    return import_and_convert_bif_files_to_json.run(input_dir)
-
-
-@app.command()
 def encode() -> object:
     from omnipy_examples.encode import import_and_flatten_encode_data
     return import_and_flatten_encode_data.run()
