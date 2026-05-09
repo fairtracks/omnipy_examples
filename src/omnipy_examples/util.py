@@ -18,8 +18,7 @@ def get_github_repo_urls(owner: str,
         api_url.path // 'repos' // owner // repo // 'contents' // path
         api_url.query['ref'] = branch
 
-        json_data = JsonListOfDictsDataset()
-        json_data.load(api_url)
+        json_data = JsonListOfDictsDataset.load(api_url)
         names = Model[list[str]](
             [f['name'] for f in json_data[0] if f['name'].endswith(file_suffix)])
         return HttpUrlDataset({name: f'{url_pre}/{name}' for name in names})

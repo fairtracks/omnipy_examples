@@ -67,16 +67,14 @@ class BedDataset(Dataset[BedModel]):
 
 # Omnipy tasks
 @TaskTemplate()
-def fetch_bed_dataset(url_list: HttpUrlDataset) -> StrDataset:
-    bed_raw_dataset = StrDataset()
-    bed_raw_dataset.load(url_list)
-    return bed_raw_dataset
+def fetch_bed_dataset_as_str(url_list: HttpUrlDataset) -> StrDataset:
+    return StrDataset.load(url_list)
 
 
 # Omnipy flows
 @LinearFlowTemplate(
     get_github_repo_urls,
-    fetch_bed_dataset,
+    fetch_bed_dataset_as_str,
     convert_dataset.refine(name='parse_bed', fixed_params={'dataset_cls': BedDataset}),
     convert_dataset.refine(
         name='convert_to_dataframe', fixed_params={'dataset_cls': PandasDataset}),
