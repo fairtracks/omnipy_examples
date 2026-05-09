@@ -17,7 +17,7 @@ from omnipy import (Chain2,
                     TableOfPydanticRecordsModel,
                     TaskTemplate)
 import pandas as pd
-from pydantic import BaseModel, conint, constr
+import omnipy.util.pydantic as pyd
 
 # Constants
 
@@ -70,7 +70,7 @@ class StrDotMissingModel(Model[str | None]):
         return None if data == '.' else data
 
 
-GenomeCoord = conint(ge=0, le=2**64 - 1)
+GenomeCoord = pyd.conint(ge=0, le=2**64 - 1)
 
 
 class FloatDotMissingModel(Model[float | str]):
@@ -99,15 +99,15 @@ AttributesSplitToItemsModel = NestedSplitToItemsModel.adjust(
 
 
 class GffRecordModel(BaseModel):
-    seqid: constr(min_length=1, max_length=255, regex='[a-zA-Z0-9]+')
+    seqid: pyd.constr(min_length=1, max_length=255, regex='[a-zA-Z0-9]+')
     source: StrDotMissingModel
     type: StrDotMissingModel
     start: GenomeCoord
     end: GenomeCoord
     score: FloatDotMissingModel
-    strand: Chain2[constr(regex='[-+\.]'), StrandBoolDotMissingModel]
-    phase: Chain2[constr(regex='[012\.]'), FloatDotMissingModel]
     attributes: str
+    strand: Chain2[pyd.constr(regex='[-+\.]'), StrandBoolDotMissingModel]
+    phase: Chain2[pyd.constr(regex='[012\.]'), FloatDotMissingModel]
 
 
 # Omnipy models

@@ -14,8 +14,8 @@ from omnipy import (Chain2,
                     StrDataset,
                     TableOfPydanticRecordsModel,
                     TaskTemplate)
+from omnipy.util.pydantic import BaseModel, conint, constr
 from omnipy_examples.util import get_github_repo_urls
-from pydantic import BaseModel, conint, constr
 
 # Restricted types
 GenomeCoord = conint(ge=0, le=2**64 - 1)

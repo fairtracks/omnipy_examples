@@ -16,8 +16,8 @@ from omnipy import (DagFlowTemplate,
                     StrDataset,
                     TableOfPydanticRecordsModel,
                     TaskTemplate)
+import omnipy.util.pydantic as pyd
 from omnipy_examples.util import get_github_repo_urls
-import pydantic as pyd
 
 runtime.config.data.http_config_for_host[
     'raw.githubusercontent.com'].requests_per_time_period = 5000
