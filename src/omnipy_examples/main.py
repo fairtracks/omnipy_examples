@@ -42,13 +42,13 @@ def encode() -> object:
 
 
 @app.command()
-def gff(input_dir: str = installed_example_data_path.joinpath('gff')) -> object:
+def gff(input_dir: Path = installed_example_data_path.joinpath('gff')) -> object:
     from omnipy_examples.gff import import_gff_as_pandas
     return import_gff_as_pandas.run(input_dir)
 
 
 @app.command()
-def isajson(input_dir: str = installed_example_data_path.joinpath('isa-json')) -> object:
+def isajson(input_dir: Path = installed_example_data_path.joinpath('isa-json')) -> object:
     from omnipy_examples.isajson import convert_isa_json_to_relational_tables
     return convert_isa_json_to_relational_tables.run(input_dir)
 

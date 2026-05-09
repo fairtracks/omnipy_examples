@@ -1,5 +1,6 @@
 from collections import defaultdict
 from math import nan
+from pathlib import Path
 
 from omnipy import (Chain2,
                     Chain3,
@@ -164,5 +165,5 @@ def gff_to_pandas(dataset: GffSectionsModel) -> PandasDataset:
     gff_to_pandas.refine(persist_outputs=PersistOutputsOptions.DISABLED,),
     # persist_outputs=PersistOutputsOptions.DISABLED,
 )
-def import_gff_as_pandas(directory: str) -> PandasDataset:
+def import_gff_as_pandas(directory: Path) -> PandasDataset:
     ...

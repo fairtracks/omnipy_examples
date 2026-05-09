@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from omnipy import (convert_dataset_list_of_dicts_to_pandas,
                     convert_dataset_string_to_json,
                     flatten_nested_json,
@@ -16,5 +18,5 @@ from omnipy import (convert_dataset_list_of_dicts_to_pandas,
     flatten_nested_json,
     convert_dataset_list_of_dicts_to_pandas,
 )
-def convert_isa_json_to_relational_tables(dir_path: str):
+def convert_isa_json_to_relational_tables(dir_path: Path):
     ...
