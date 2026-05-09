@@ -53,11 +53,11 @@ def import_and_flatten_uniprot() -> PandasDataset:
 @TaskTemplate()
 def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     #  Get synonym table and clean foreign key
-    df_synonym = pandas['results.genes.synonyms'].contents
+    df_synonym = pandas['results.genes.synonyms'].content
     # df_synonym['_omnipy_ref'] = df_synonym['_omnipy_ref'].str.strip('results.genes.')
 
     # Get gene table and join with synonym table to get gene foreign id
-    df_gene = pandas['results.genes'].contents
+    df_gene = pandas['results.genes'].content
     df_merge_1 = pd.merge(
         df_synonym, df_gene, left_on='_omnipy_ref', right_on='_omnipy_id', how='right')
     df_merge_1 = df_merge_1.loc[:, ['value', '_omnipy_ref_y']]
@@ -65,7 +65,7 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     # df_merge_1['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
 
     # Get keywords table and clean foreign key
-    df_keywords = pandas['results.keywords'].contents
+    df_keywords = pandas['results.keywords'].content
     # df_keywords['_omnipy_ref'].replace('results.', '', inplace=True, regex=True)
     df_keywords = df_keywords.loc[:, ['_omnipy_ref', 'category', 'name']]
 
@@ -73,7 +73,7 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
     df_merge_2 = pd.merge(df_merge_1, df_keywords, on='_omnipy_ref', how='right')
 
     # Get results table for regene name and primary accession
-    df_results = pandas['results'].contents
+    df_results = pandas['results'].content
     df_results = df_results.loc[:, ['_omnipy_id', 'primaryAccession', 'uniProtkbId']]
     df_merge_final = pd.merge(
         df_merge_2, df_results, left_on='_omnipy_ref', right_on='_omnipy_id', how='right')
@@ -87,8 +87,8 @@ def pandas_magic(pandas: PandasDataset) -> PandasDataset:
 @TaskTemplate()
 def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
     df_merge_1 = pd.merge(
-        dataset['results.genes.geneName'].contents,
-        dataset['results.genes'].contents,
+        dataset['results.genes.geneName'].content,
+        dataset['results.genes'].content,
         left_on='_omnipy_ref',
         right_on='_omnipy_id',
         how='right',
@@ -96,7 +96,7 @@ def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
     )
 
     df_merge_2 = pd.merge(
-        dataset['results.genes.synonyms'].contents,
+        dataset['results.genes.synonyms'].content,
         df_merge_1,
         left_on='_omnipy_ref',
         right_on='_omnipy_id',
@@ -106,7 +106,7 @@ def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
 
     df_merge_3 = pd.merge(
         df_merge_2,
-        dataset['results.keywords'].contents,
+        dataset['results.keywords'].content,
         left_on='_omnipy_ref',
         right_on='_omnipy_ref',
         how='right',
@@ -114,7 +114,7 @@ def pandas_magic_alternative(dataset: PandasDataset) -> PandasDataset:
 
     df_merge_4 = pd.merge(
         df_merge_3,
-        dataset['results'].contents,
+        dataset['results'].content,
         left_on='_omnipy_ref',
         right_on='_omnipy_id',
         how='right',
