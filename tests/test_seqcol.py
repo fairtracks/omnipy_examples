@@ -2,8 +2,8 @@ from textwrap import dedent
 from typing import Annotated, TypeAlias
 
 from omnipy_examples.seqcol import (convert_fasta_checksums_to_seqcols_level_2,
-                                    convert_seqcols_to_level_0,
-                                    convert_seqcols_to_level_1,
+                                    convert_seqcols_level1_to_level0,
+                                    convert_seqcols_level2_to_level1,
                                     FastaChecksumDataset,
                                     FastaChecksumModel,
                                     SeqColLevel1Dataset,
@@ -103,12 +103,12 @@ def test_convert_seqcols_to_level_1(
     seqcols_example_level_1: Annotated[SeqColsLevel1Type, pytest.fixture],
 ) -> None:
     seqcols_level_2 = SeqColLevel2Dataset(example=seqcols_example_level_2)
-    seqcols_level_1 = convert_seqcols_to_level_1.run(seqcols_level_2)['seqcols_level_1']
+    seqcols_level_1 = convert_seqcols_level2_to_level1.run(seqcols_level_2)['seqcols_level_1']
     assert seqcols_level_1['example'].to_data() == seqcols_example_level_1
 
 
 def test_convert_seqcols_to_level_0(
         seqcols_example_level_1: Annotated[SeqColsLevel1Type, pytest.fixture]) -> None:
     seqcols_level_1 = SeqColLevel1Dataset(example=seqcols_example_level_1)
-    seqcols_level_0 = convert_seqcols_to_level_0.run(seqcols_level_1)['seqcols_level_0']
+    seqcols_level_0 = convert_seqcols_level1_to_level0.run(seqcols_level_1)['seqcols_level_0']
     assert seqcols_level_0['example'].to_data() == 'sjNNwm4zov3Dl0FRWbRTcZwzqrTQKIqL'

@@ -7,7 +7,7 @@ from omnipy.data.dataset import Dataset
 from omnipy.data.model import Model
 from pydantic import PositiveInt
 
-runtime.config.engine = 'local'
+runtime.config.engine.choice = 'local'
 
 
 class ListOfNumbers(Model[List[int]]):

@@ -48,6 +48,13 @@ def gff(input_dir: Path = installed_example_data_path.joinpath('gff')) -> object
 
 
 @app.command()
+def gff_bionumpy(input_dir: Path = installed_example_data_path.joinpath('gff')) -> object:
+    from omnipy_examples.gff_bionumpy import import_gff_to_bionumpy
+    asd = import_gff_to_bionumpy.run(input_dir)
+    return asd
+
+
+@app.command()
 def isajson(input_dir: Path = installed_example_data_path.joinpath('isa-json')) -> object:
     from omnipy_examples.isajson import convert_isa_json_to_relational_tables
     return convert_isa_json_to_relational_tables.run(input_dir)
@@ -74,17 +81,17 @@ def seqcol(owner: str = 'refgenie',
 
 
 @app.meta.default
-def main(output_dir: str = runtime.config.job.output_storage.local.persist_data_dir_path,
+def main(*args,
+         output_dir: str = runtime.config.job.output_storage.local.persist_data_dir_path,
          engine: EngineChoice.Literals = 'local',
-         persist_outputs: ConfigPersistOutputsOptions.Literals = 'all',
-         restore_outputs: ConfigRestoreOutputsOptions.Literals = 'disabled',
-         *args):
+         persist_outputs: ConfigPersistOutputsOptions.Literals = 'flow',
+         restore_outputs: ConfigRestoreOutputsOptions.Literals = 'disabled'):
 
     runtime.config.engine.choice = engine
-    runtime.config.job.output_storage.local.persist_data_dir_path = output_dir
+    runtime.config.job.output_storage.local.persist_data_dir_path = output_dir + '/' + args[0]
     runtime.config.job.output_storage.persist_outputs = persist_outputs
     runtime.config.job.output_storage.restore_outputs = restore_outputs
-    runtime.config.data.model.interactive = False
+    # runtime.config.data.model.interactive = False
 
     ret = app(*args)
     if is_dataset_instance(ret):

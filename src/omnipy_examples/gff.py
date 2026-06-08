@@ -1,23 +1,30 @@
 from collections import defaultdict
+from collections.abc import Iterable, Mapping
 from math import nan
 from pathlib import Path
+from types import GenericAlias
+from typing import Union
 
 from omnipy import (Chain2,
-                    Chain3,
                     convert_dataset,
                     Dataset,
                     import_directory,
+                    IteratingPydanticRecordsModel,
                     LinearFlowTemplate,
                     Model,
+                    NestedDataset,
                     NestedSplitToItemsModel,
-                    PandasDataset,
-                    PandasModel,
-                    PersistOutputsOptions,
+                    SplitLinesToColumnsModel,
+                    SplitToItemsModel,
                     SplitToLinesModel,
-                    TableListOfDictsOfJsonScalarsModel,
-                    TableOfPydanticRecordsModel,
+                    StrDataset,
                     TaskTemplate)
-import pandas as pd
+from omnipy.components.json.typedefs import JsonScalar
+from omnipy.components.tables.models import (_ColumnWiseTableWithColNamesMixin,
+                                             JsonMaxLevel2ColumnModel,
+                                             JsonMaxLevel2ColumnWiseTableWithColNamesModel,
+                                             JsonMaxLevel2Types,
+                                             PrintableTable)
 import omnipy.util.pydantic as pyd
 
 # Constants
@@ -27,25 +34,178 @@ ATTRIB_COL = GFF_COLS[-1]
 
 # Models
 
-# class GffFileDataclassModel(BaseModel):
-#     comments: list[str] = []
-#     directives: list[str] = []
-#     data: list[str] = []
-#     sequences: list[str] = []
+AttributesSplitToItemsModel = NestedSplitToItemsModel.adjust(
+    'AttributesSplitToItemsModel', delimiters=(';', '='))
+
+SplitToItemsBySpaceModel = SplitToItemsModel.adjust('SplitToItemsBySpaceModel', delimiter=' ')
+SplitToItemsByCommaModel = SplitToItemsModel.adjust('SplitToItemsByCommaModel', delimiter=',')
+
+ReferencesSplitToItemsModel = NestedSplitToItemsModel.adjust(
+    'ReferencesSplitToItemsModel', delimiters=(',', ':'))
 
 
-# class GffModel(Model[GffFileDataclassModel | SplitToLinesModel]):
-class GffSectionsModel(Model[Dataset[Model[list[str]]] | SplitToLinesModel]):
+class TargetRecord(pyd.BaseModel):
+    target_id: str
+    start: int
+    end: int
+    strand: bool | None = None
+
+    @pyd.validator('strand', pre=True)
+    def validate_strand(cls, v):
+        if isinstance(v, str):
+            match v:
+                case '+':
+                    return True
+                case '-':
+                    return False
+                case _:
+                    raise ValueError(f'Invalid strand value: {v}')
+        return v
+
+
+class GapRecord(pyd.BaseModel):
+    operation: pyd.constr(regex='[MIDFR]', max_length=1)
+    length: int
+
+
+class GapModel(Model[GapRecord | str]):
     @classmethod
-    def _parse_data(
-            cls, data: Dataset[Model[list[str]]] | SplitToLinesModel) -> Dataset[Model[list[str]]]:
-
-        if isinstance(data, Dataset):
+    def _parse_data(cls, data: GapRecord | str) -> GapRecord:
+        if isinstance(data, GapRecord):
             return data
 
-        # gff_file = GffFileDataclassModel()
-        gff_file = defaultdict(list[str])
+        assert len(data) >= 2
+        return GapRecord(operation=data[0], length=data[1:])
+
+
+class CurieRecord(pyd.BaseModel):
+    namespace: str
+    id: str
+
+
+AttributesModel = Chain2[
+    AttributesSplitToItemsModel,
+    Model[dict[str, JsonScalar]],
+]
+
+
+class MySpitter(SplitToItemsByCommaModel):
+    @classmethod
+    def _parse_data(cls, data: SplitToItemsByCommaModel) -> SplitToItemsByCommaModel:
+        spitted = super()._parse_data(data)
+        return spitted
+
+
+class GffAttributesRecord(pyd.BaseModel):
+    class Config:
+        extra = pyd.Extra.allow
+
+    ID: str | None = None
+    Name: str | None = None
+    Alias: str | None = None
+    Parent: Chain2[SplitToItemsByCommaModel, Model[list[str]]] | None = None
+    Target: Chain2[SplitToItemsBySpaceModel, Model[TargetRecord]] | None = None
+    Gap: Chain2[SplitToItemsBySpaceModel, GapModel] | None = None
+    Derives_from: str | None = None
+    Note: Chain2[SplitToItemsByCommaModel, Model[list[str]]] | None = None
+    Dbxref: Chain2[ReferencesSplitToItemsModel, Model[list[tuple[str, str]]]] | None = None
+    Ontology_term: Chain2[ReferencesSplitToItemsModel, Model[CurieRecord]] | None = None
+    Is_circular: bool | None = None
+
+    @pyd.validator('Is_circular', pre=True)
+    def validate_is_circular(cls, v):
+        if isinstance(v, str):
+            match v:
+                case _v if _v.lower() == 'true':
+                    return True
+                case _v if _v.lower() == 'false':
+                    return False
+                case _:
+                    raise ValueError(f'Invalid value for "Is_circular": {v}')
+        return v
+
+
+class GffRecord(pyd.BaseModel):
+    seqid: pyd.constr(min_length=1, max_length=255, regex='[a-zA-Z0-9]+')
+    source: str | None = ...
+    type: str | None = pyd.Field(...)
+    start: int
+    end: int = pyd.Field(...)
+    score: float
+    strand: bool | None = ...
+    phase: float
+    attributes: Chain2[AttributesSplitToItemsModel, Model[GffAttributesRecord]]
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    @pyd.validator('source', 'type', pre=True)
+    def validate_perhaps_missing_string(cls, v):
+        return None if v == '.' else v
+
+    @pyd.validator('strand', pre=True)
+    def validate_strand(cls, v):
+        if isinstance(v, str):
+            match v:
+                case '+':
+                    return True
+                case '-':
+                    return False
+                case '.':
+                    return None
+                case _:
+                    raise ValueError(f'Invalid strand value: {v}')
+        return v
+
+    @pyd.validator('score', pre=True)
+    def validate_score(cls, v):
+        return nan if v == '.' else float(v)
+
+    @pyd.validator('phase', pre=True)
+    def validate_phase(cls, v):
+        if isinstance(v, str):
+            match v:
+                case '0' | '1' | '2':
+                    return float(v)
+                case '.':
+                    return float('nan')
+                case _:
+                    raise ValueError(f'Invalid phase value: {v}')
+        return v
+
+
+class ParseGffTableModel(
+        _ColumnWiseTableWithColNamesMixin,
+        Chain2[SplitLinesToColumnsModel,
+               IteratingPydanticRecordsModel[GffRecord,
+                                             JsonMaxLevel2ColumnWiseTableWithColNamesModel,
+                                             JsonMaxLevel2ColumnModel,
+                                             JsonMaxLevel2Types]],
+        PrintableTable,
+):
+    ...
+
+
+class GffFileDataclassPydModel(pyd.BaseModel):
+    comments: list[str]
+    directives: list[str]
+    sequences: list[str]
+    features: ParseGffTableModel
+
+
+class GffSectionsModel(Model[GffFileDataclassPydModel | SplitToLinesModel]):
+    @classmethod
+    def _parse_data(cls,
+                    data: GffFileDataclassPydModel | SplitToLinesModel) -> GffFileDataclassPydModel:
+
+        if isinstance(data, GffFileDataclassPydModel):
+            return data
+
         in_sequences_section = False
+        comments = []
+        directives = []
+        sequences = []
+        features = []
 
         for line in data:
             match line:
@@ -54,116 +214,80 @@ class GffSectionsModel(Model[Dataset[Model[list[str]]] | SplitToLinesModel]):
                 case '##FASTA':
                     in_sequences_section = True
                 case s if s.startswith('##'):
-                    gff_file['directives'].append(line)
+                    directives.append(line)
                 case s if s.startswith('#'):
-                    gff_file['comments'].append(line)
+                    comments.append(line)
                 case _:
                     if in_sequences_section:
-                        gff_file['sequences'].append(line)
+                        sequences.append(line)
                     else:
-                        gff_file['features'].append(line)
-        return gff_file
+                        # Here, appending one at a time will create a large overhead
+                        features.append(line)
+
+        return GffFileDataclassPydModel(
+            comments=comments, directives=directives, sequences=sequences, features=features)
 
 
-class StrDotMissingModel(Model[str | None]):
-    @classmethod
-    def _parse_data(cls, data: str | None) -> str | None:
-        return None if data == '.' else data
-
-
-GenomeCoord = pyd.conint(ge=0, le=2**64 - 1)
-
-
-class FloatDotMissingModel(Model[float | str]):
-    @classmethod
-    def _parse_data(cls, data: float | str) -> float:
-        return nan if data == '.' else float(data)
-
-
-class StrandBoolDotMissingModel(Model[bool | None | str]):
-    @classmethod
-    def _parse_data(cls, data: bool | None | str) -> bool | None:
-        if isinstance(data, str):
-            match data:
-                case '+':
-                    return True
-                case '-':
-                    return False
-                case '.':
-                    return None
-        else:
-            return data
-
-
-AttributesSplitToItemsModel = NestedSplitToItemsModel.adjust(
-    'AttributesSplitToItemsModel', delimiters=(';', '='))
-
-
-class GffRecordModel(BaseModel):
-    seqid: pyd.constr(min_length=1, max_length=255, regex='[a-zA-Z0-9]+')
-    source: StrDotMissingModel
-    type: StrDotMissingModel
-    start: GenomeCoord
-    end: GenomeCoord
-    score: FloatDotMissingModel
-    attributes: str
-    strand: Chain2[pyd.constr(regex='[-+\.]'), StrandBoolDotMissingModel]
-    phase: Chain2[pyd.constr(regex='[012\.]'), FloatDotMissingModel]
-
-
-# Omnipy models
-class GffFeaturesModel(Chain2[SplitToLinesModel, TableOfPydanticRecordsModel[GffRecordModel]]):
+class GffSectionsDataset(Dataset[GffSectionsModel]):
     ...
 
 
-# Chained models
-
-# TODO: Fix deepcopy issue in AttributesToPandasModel.
-
-AttributesToPandasModel = Chain3[
-    Model[list[AttributesSplitToItemsModel]],
-    TableListOfDictsOfJsonScalarsModel,
-    PandasModel,
-]
-
-# Tasks
+from omnipy.util.helpers import is_non_str_byte_iterable
 
 
-@TaskTemplate(iterate_over_data_files=True)
-def gff_to_pandas(dataset: GffSectionsModel) -> PandasDataset:
-    output = PandasDataset()
-    for key, val in dataset.items():
-        if key == 'features':
-            plain_table = PandasModel(GffFeaturesModel(val))
-            attributes_as_list: list[str] = plain_table[ATTRIB_COL].to_list()
-            attributes_table = AttributesToPandasModel(attributes_as_list)
-            # attributes_table = PandasModel(
-            #     TableListOfDictsOfJsonScalarsModel(
-            #         Model[list[AttributesSplitToItemsModel]](attributes_as_list)))
-            plain_table = plain_table.drop(columns=[ATTRIB_COL])
-            table = PandasModel(pd.concat([plain_table, attributes_table], axis=1, join='inner'))
-        else:
-            table = PandasModel(val)
-        output[key] = table
-    return output
+class GroupByTypeModel(Chain2[Model[list], Model[dict[type | GenericAlias, list]]]):
+    @classmethod
+    def _parse_data(cls, data: Model[list]) -> Model[dict[type | GenericAlias, list]]:
+        grouped: dict[type, list] = defaultdict(list)
+
+        def _iter_union_type(seq: Iterable):
+            return Union[tuple(type(item) for item in seq)]
+
+        def _deduce_full_type(_item: object) -> type:
+            try:
+                if isinstance(_item, Mapping):
+                    return type(_item)[  # type: ignore[index]
+                        _iter_union_type(_item.keys()),
+                        _iter_union_type(_item.values()),
+                    ]
+                elif isinstance(_item, tuple):
+                    return tuple[tuple(type(_) for _ in _item)]
+                elif is_non_str_byte_iterable(_item):
+                    return type(_item)[_iter_union_type(_item)]  # type: ignore[index]
+            except TypeError:
+                pass
+            return type(_item)
+
+        for item in data.content:
+            full_type = _deduce_full_type(item)
+            grouped[full_type].append(item)  # pyright: ignore [reportArgumentType]
+        return Model[dict[type | GenericAlias, list]](grouped)
 
 
 # Flows
 
 
+@TaskTemplate()
+def first(dataset: StrDataset) -> StrDataset:
+    return dataset[0:1]
+
+
 @LinearFlowTemplate(
     import_directory.refine(
         name='import_gff_files',
-        fixed_params=dict(include_suffixes=('.gff',), model=Model[str]),
-        # persist_outputs=PersistOutputsOptions.DISABLED,
+        fixed_params=dict(include_suffixes=('.gff',)),
     ),
+    first,
     convert_dataset.refine(
         name='parse_gff',
-        fixed_params=dict(dataset_cls=Dataset[GffSectionsModel]),
-        # persist_outputs=PersistOutputsOptions.DISABLED,
+        fixed_params=dict(dataset_cls=GffSectionsDataset),
     ),
-    gff_to_pandas.refine(persist_outputs=PersistOutputsOptions.DISABLED,),
+    convert_dataset.refine(
+        name='to_nested_dataset',
+        fixed_params=dict(dataset_cls=NestedDataset),
+    ),
+    # gff_to_pandas.refine(persist_outputs=PersistOutputsOptions.DISABLED,),
     # persist_outputs=PersistOutputsOptions.DISABLED,
 )
-def import_gff_as_pandas(directory: Path) -> PandasDataset:
+def import_gff_as_pandas(directory: Path) -> NestedDataset:
     ...

@@ -14,6 +14,7 @@ from omnipy import (Chain2,
                     StrDataset,
                     TableOfPydanticRecordsModel,
                     TaskTemplate)
+from omnipy.components.tables.models import PrintableTable
 from omnipy.util.pydantic import BaseModel, conint, constr
 from omnipy_examples.util import get_github_repo_urls
 
@@ -56,7 +57,8 @@ class BedRecordModel(BaseModel):
 # Omnipy models
 class BedModel(Chain3[SplitToLinesModel,
                       FilterCommentsAndEmptyLinesModel,
-                      TableOfPydanticRecordsModel[BedRecordModel]]):
+                      TableOfPydanticRecordsModel[BedRecordModel]],
+               PrintableTable):
     ...
 
 
